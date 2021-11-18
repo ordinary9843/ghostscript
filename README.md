@@ -1,4 +1,6 @@
 # Ghostscript
+[![Coverage Status](https://coveralls.io/repos/github/ordinary9843/ghostscript/badge.svg?branch=master)](https://coveralls.io/github/ordinary9843/ghostscript?branch=master)
+
 Use ghostscript guess and convert PDF file version for PHP.
 
 ## Requirements
