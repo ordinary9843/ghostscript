@@ -1,0 +1,20 @@
+{
+    "name": "ordinary9843/ghostscript",
+    "description": "Use ghostscript guess and convert PDF file version for PHP.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jerry Chen",
+            "email": "ordinary9843@gmail.com"
+        }
+    ],
+    "require": {   
+        "php": ">=7.1.33"
+    }, 
+    "autoload": {  
+        "psr-4": { 
+            "Ordinary9843\\": "src/"   
+        }  
+    }
+}
