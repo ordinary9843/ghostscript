@@ -1,5 +1,6 @@
 # Ghostscript
 [![build](https://github.com/ordinary9843/ghostscript/actions/workflows/php.yml/badge.svg)](https://github.com/ordinary9843/ghostscript/actions/workflows/php.yml)
+[![codecov](https://codecov.io/gh/ordinary9843/ghostscript/branch/master/graph/badge.svg?token=DMXRZFN55V)](https://codecov.io/gh/ordinary9843/ghostscript)
 
 Use ghostscript guess and convert PDF file version for PHP.
 
