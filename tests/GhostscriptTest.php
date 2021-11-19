@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Ordinary9843\Ghostscript;
 
@@ -75,7 +76,7 @@ class GhostscriptTest extends TestCase
      */
     public function testValidateBinPath()
     {
-        $this->expectExceptionMessage('The ghostscript binary path is not set.');
+        $this->expectException('Exception');
 
         $ghostscript = new Ghostscript();
         $ghostscript->validateBinPath();
