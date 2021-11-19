@@ -23,9 +23,7 @@ jobs:
           coverage: xdebug
       - name: Update composer
         run: composer self-update
-      - name: Update composer
-        run: composer update --lock
-      - name: Install composer
+      - name: Install dependencies
         run: composer install --prefer-dist --no-interaction
       - name: Run tests
         run: composer test

@@ -1,5 +1,5 @@
 .idea/
 vendor/
 /tests/report/
-composer.json
+composer.lock
 coverage.xml
