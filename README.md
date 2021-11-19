@@ -29,7 +29,7 @@ use Ordinary9843\Ghostscript;
 $binPath = '/usr/bin/gs';
 $tmpPath = '/tmp';
 $ghostscript = new Ghostscript($binPath, $tmpPath);
-$file = '../files/test.pdf';
+$file = __DIR__ . '../files/test.pdf';
 
 // Guess PDF version
 $version = $ghostscript->guess($file);
@@ -46,7 +46,7 @@ $ghostscript->deleteTmpFile();
 
 ## Testing
 ```bash
-vendor/bin/phpunit
+composer test
 ```
 
 ## Licenses
