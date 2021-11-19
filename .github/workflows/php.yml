@@ -3,17 +3,18 @@ on:
   push:
     branches: [master]
 jobs:
-  runs-on: ubuntu-latest
-  strategy:
-    matrix:
-      php-versions: ['7.1']
-  name: PHP ${{ matrix.php-versions }}
-  steps:
+  run:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-versions: ['7.1']
+    name: PHP ${{ matrix.php-versions }}
+    steps:
       - uses: actions/checkout@v2
       - name: Setup PHP
-          uses: shivammathur/setup-php@v2
-          with:
-            php-version: ${{ matrix.php-versions }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
       - name: Install dependencies
         run: composer install --prefer-dist --no-interaction --dev
       - name: Update packages
