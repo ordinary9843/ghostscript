@@ -104,6 +104,34 @@ class Ghostscript
     }
 
     /**
+     * Get temporary file count
+     * 
+     * @return int
+     */
+    public function getTmpFileCount()
+    {
+        $files = scandir($this->tmpPath);
+
+        $count = 0;
+        foreach ($files as $file) {
+            if (in_array($file, ['.', '..'])) {
+                continue;
+            }
+
+            $path = $this->tmpPath . DIRECTORY_SEPARATOR . $file;
+
+            if (is_file($path)) {
+                $pathInfo = pathinfo($path);
+                $filename = $pathInfo['filename'];
+
+                (preg_match('/' . self::TMP_FILE_PREFIX . '/', $filename)) && $count++;
+            }
+        }
+
+        return $count;
+    }
+
+    /**
      * Validate ghostscript binary path
      * 
      * @return void

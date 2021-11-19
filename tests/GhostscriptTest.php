@@ -1,42 +1,88 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+namespace Tests;
 
+use PHPUnit\Framework\TestCase;
 use Ordinary9843\Ghostscript;
 
-try {
-    $isWindows = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
+class GhostscriptTest extends TestCase
+{
+    private $ghostscript;
+    private $testFile = __DIR__ . '/../files/test.pdf';
 
-    if ($isWindows === true) {
+    /**
+     * This method is called before each test.
+     * 
+     * @return void
+     */
+    protected function setUp()
+    {
+        parent::setUp();
 
-        // Windows example path
-        $binPath = 'C:\gs\gs9.50\bin\gswin64c.exe';
-        $tmpPath = 'C:\Windows\TEMP';
-    } else {
+        $isWindows = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
 
-        // Linux example path
-        $binPath = '/usr/local/bin/gs';
-        $tmpPath = '/tmp';
+        if ($isWindows === true) {
+
+            // Windows example path
+            $binPath = 'C:\gs\gs9.50\bin\gswin64c.exe';
+            $tmpPath = 'C:\Windows\TEMP';
+        } else {
+
+            // Linux example path
+            $binPath = '/usr/local/bin/gs';
+            $tmpPath = '/tmp';
+        }
+
+        $this->ghostscript = new Ghostscript($binPath, $tmpPath);
     }
 
-    $ghostscript = new Ghostscript($binPath, $tmpPath);
-    $file = '../files/test.pdf';
+    /**
+     * Test guess PDF version
+     * 
+     * @return void
+     */
+    public function testGuess()
+    {
+        $version = $this->ghostscript->guess($this->testFile);
 
-    // Guess PDF version
-    $version = $ghostscript->guess($file);
-    echo 'Version is: ' . $version . '<br />';
+        $this->assertEquals($version, 1.4);
+    }
 
-    // Convert PDF version
-    $newVersion = 1.4;
-    $file = $ghostscript->convert($file, $newVersion);
-    echo 'New file path: ' . $file . '<br />';
+    /**
+     * Test convert PDF version
+     * 
+     * @return void
+     */
+    public function testConvert()
+    {
+        $newVersion = 1.5;
+        $this->ghostscript->convert($this->testFile, $newVersion);
+        $version = $this->ghostscript->guess($this->testFile);
 
-    // Can also be delete temporary file
-    $ghostscript->deleteTmpFile();
+        $this->assertEquals($version, $newVersion);
 
-    echo 'Success!';
-} catch (Exception $e) {
-    echo 'Error: ' . $e->getMessage();
-} finally {
-    die;
+        $oldVersion = 1.4;
+        $this->ghostscript->convert($this->testFile, $oldVersion);
+        $version = $this->ghostscript->guess($this->testFile);
+
+        $this->assertEquals($version, $oldVersion);
+    }
+
+    /**
+     * Test delete temporary PDF
+     * 
+     * @return void
+     */
+    public function testDeleteTmpFile()
+    {
+        $tmpFileCount = $this->ghostscript->getTmpFileCount();
+
+        $this->assertNotEquals($tmpFileCount, 0);
+
+        $this->ghostscript->deleteTmpFile(true);
+
+        $tmpFileCount = $this->ghostscript->getTmpFileCount();
+
+        $this->assertEquals($tmpFileCount, 0);
+    }
 }
