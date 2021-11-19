@@ -138,7 +138,7 @@ class Ghostscript
      * 
      * @throws Exception
      */
-    private function validateBinPath()
+    public function validateBinPath()
     {
         if (!is_dir($this->binPath) && !is_file($this->binPath)) {
             $this->throwException('The ghostscript binary path is not set.');

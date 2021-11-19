@@ -7,11 +7,23 @@ use Ordinary9843\Ghostscript;
 
 class GhostscriptTest extends TestCase
 {
-    private $ghostscript;
+    /** @var string Test pdf file path */
     private $testFile = __DIR__ . '/../files/test.pdf';
 
+    /** @var string Ghostscript binary absolute path */
+    private $binPath = '';
+
+    /** @var string Temporary save file absolute path */
+    private $tmpPath = '';
+
+    /** @var float Convert PDF version to 1.4 */
+    private $oldVersion = 1.4;
+
+    /** @var float Convert PDF version to 1.5 */
+    private $newVersion = 1.5;
+
     /**
-     * This method is called before each test.
+     * This method is called before each test
      * 
      * @return void
      */
@@ -22,26 +34,67 @@ class GhostscriptTest extends TestCase
         $isWindows = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
 
         if ($isWindows === true) {
-            $binPath = 'C:\gs\gs9.55.0\bin\gswin64c.exe';
-            $tmpPath = 'C:\Windows\TEMP';
+            $this->binPath = 'C:\gs\gs9.55.0\bin\gswin64c.exe';
         } else {
-            $binPath = '/usr/bin/gs';
-            $tmpPath = '/tmp';
+            $this->binPath = '/usr/bin/gs';
         }
 
-        $this->ghostscript = new Ghostscript($binPath, $tmpPath);
+        $this->tmpPath = sys_get_temp_dir();
     }
 
     /**
-     * Test guess PDF version
+     * Test Ghostscript binary absolute path
+     * 
+     * @return void
+     */
+    public function testBinPath()
+    {
+        $ghostscript = new Ghostscript($this->binPath);
+        $binPath = $ghostscript->getBinPath();
+
+        $this->assertEquals($binPath, $this->binPath);
+    }
+
+    /**
+     * Test temporary save file absolute path
+     * 
+     * @return void
+     */
+    public function testTmpPath()
+    {
+        $ghostscript = new Ghostscript();
+        $tmpPath = $ghostscript->getTmpPath();
+
+        $this->assertEquals($tmpPath, $this->tmpPath);
+    }
+
+    /**
+     * Test check Ghostscript binary absolute path does it exist
+     * 
+     * @return void
+     */
+    public function testValidateBinPath()
+    {
+        $this->expectExceptionMessage('The ghostscript binary path is not set.');
+
+        $ghostscript = new Ghostscript();
+        $ghostscript->validateBinPath();
+    }
+
+    /**
+     * Test guess PDF version.
      * 
      * @return void
      */
     public function testGuess()
     {
-        $version = $this->ghostscript->guess($this->testFile);
+        $ghostscript = new Ghostscript($this->binPath, $this->tmpPath);
+        $version = $ghostscript->guess($this->testFile);
 
-        $this->assertEquals($version, 1.4);
+        $this->assertContains($version, [
+            $this->oldVersion,
+            $this->newVersion
+        ]);
     }
 
     /**
@@ -51,17 +104,16 @@ class GhostscriptTest extends TestCase
      */
     public function testConvert()
     {
-        $newVersion = 1.5;
-        $this->ghostscript->convert($this->testFile, $newVersion);
-        $version = $this->ghostscript->guess($this->testFile);
+        $ghostscript = new Ghostscript($this->binPath, $this->tmpPath);
+        $ghostscript->convert($this->testFile, $this->newVersion);
+        $version = $ghostscript->guess($this->testFile);
 
-        $this->assertEquals($version, $newVersion);
+        $this->assertEquals($version, $this->newVersion);
 
-        $oldVersion = 1.4;
-        $this->ghostscript->convert($this->testFile, $oldVersion);
-        $version = $this->ghostscript->guess($this->testFile);
+        $ghostscript->convert($this->testFile, $this->oldVersion);
+        $version = $ghostscript->guess($this->testFile);
 
-        $this->assertEquals($version, $oldVersion);
+        $this->assertEquals($version, $this->oldVersion);
     }
 
     /**
@@ -71,9 +123,9 @@ class GhostscriptTest extends TestCase
      */
     public function testDeleteTmpFile()
     {
-        $this->ghostscript->deleteTmpFile(true);
-
-        $tmpFileCount = $this->ghostscript->getTmpFileCount();
+        $ghostscript = new Ghostscript($this->binPath, $this->tmpPath);
+        $ghostscript->deleteTmpFile(true);
+        $tmpFileCount = $ghostscript->getTmpFileCount();
 
         $this->assertEquals($tmpFileCount, 0);
     }
