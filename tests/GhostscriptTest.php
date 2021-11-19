@@ -22,13 +22,9 @@ class GhostscriptTest extends TestCase
         $isWindows = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
 
         if ($isWindows === true) {
-
-            // Windows example path
-            $binPath = 'C:\gs\gs9.50\bin\gswin64c.exe';
+            $binPath = 'C:\Program Files\gs\gs9.55.0\gswin64c.exe';
             $tmpPath = 'C:\Windows\TEMP';
         } else {
-
-            // Linux example path
             $binPath = '/usr/local/bin/gs';
             $tmpPath = '/tmp';
         }
