@@ -25,7 +25,7 @@ class GhostscriptTest extends TestCase
             $binPath = 'C:\Program Files\gs\gs9.55.0\gswin64c.exe';
             $tmpPath = 'C:\Windows\TEMP';
         } else {
-            $binPath = '/usr/local/gs';
+            $binPath = '/usr/bin/gs';
             $tmpPath = '/tmp';
         }
 

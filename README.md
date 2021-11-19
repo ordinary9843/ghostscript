@@ -25,7 +25,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Ordinary9843\Ghostscript;
 
-$binPath = '/usr/local/gs';
+$binPath = '/usr/bin/gs';
 $tmpPath = '/tmp';
 $ghostscript = new Ghostscript($binPath, $tmpPath);
 $file = '../files/test.pdf';
