@@ -37,7 +37,6 @@ class Ghostscript
         if ($this->getBinPath() === '') {
             if ($binPath !== '') {
                 $this->setBinPath($binPath);
-                
             }
         }
 
