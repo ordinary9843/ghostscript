@@ -6,39 +6,46 @@ use Exception;
 
 class Ghostscript
 {
-    /** @var string Ghostscript convert PDF base command */
-    const BASE_COMMAND = '%s -sDEVICE=pdfwrite -dCompatibilityLevel=%s -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -dColorConversionStrategy=/LeaveColorUnchanged -dEncodeColorImages=false -dEncodeGrayImages=false -dEncodeMonoImages=false -dDownsampleMonoImages=false -dDownsampleGrayImages=false -dDownsampleColorImages=false -dAutoFilterColorImages=false -dAutoFilterGrayImages=false -dColorImageFilter=/FlateEncode -dGrayImageFilter=/FlateEncode -sOutputFile=%s %s';
-
     /** @var string Ghostscript temporary prefix filename */
     const TMP_FILE_PREFIX = 'ghostscript_tmp_file_';
 
+    /** @var string Ghostscript convert PDF command */
+    protected $command = '%s -sDEVICE=pdfwrite -dCompatibilityLevel=%s -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -dColorConversionStrategy=/LeaveColorUnchanged -dEncodeColorImages=false -dEncodeGrayImages=false -dEncodeMonoImages=false -dDownsampleMonoImages=false -dDownsampleGrayImages=false -dDownsampleColorImages=false -dAutoFilterColorImages=false -dAutoFilterGrayImages=false -dColorImageFilter=/FlateEncode -dGrayImageFilter=/FlateEncode -sOutputFile=%s %s';
+
     /** @var string Ghostscript binary absolute path */
-    private $binPath;
+    private $binPath = '';
 
     /** @var string Temporary save file absolute path */
-    private $tmpPath;
+    private $tmpPath = '';
+
+    /** @var array Ghostscript options */
+    private $options = [];
+
+    /** @var string Error message */
+    private $error = '';
 
     /**
      * Initialize
      * 
-     * @param string|null $binPath
-     * @param string|null $tmpPath
+     * @param string $binPath
+     * @param string $tmpPath
      * 
      * @return void
      */
-    public function __construct(string $binPath = null, string $tmpPath = null)
+    public function __construct(string $binPath = '', string $tmpPath = '')
     {
-        if ($this->binPath === null) {
-            if ($binPath !== null) {
+        if ($this->getBinPath() === '') {
+            if ($binPath !== '') {
                 $this->setBinPath($binPath);
+                
             }
         }
 
-        if ($this->tmpPath === null) {
-            if ($tmpPath !== null) {
+        if ($this->getTmpPath() === '') {
+            if ($tmpPath !== '') {
                 $this->setTmpPath($tmpPath);
             } else {
-                $this->tmpPath = sys_get_temp_dir();
+                $this->setTmpPath(sys_get_temp_dir());
             }
         }
     }
@@ -64,7 +71,7 @@ class Ghostscript
      */
     private function generateTmpFile()
     {
-        return $this->tmpPath . DIRECTORY_SEPARATOR . uniqid(self::TMP_FILE_PREFIX) . '.pdf';
+        return $this->getTmpPath() . DIRECTORY_SEPARATOR . uniqid(self::TMP_FILE_PREFIX) . '.pdf';
     }
 
     /**
@@ -78,14 +85,15 @@ class Ghostscript
     public function deleteTmpFile(bool $isForceDelete = false, int $days = 7)
     {
         $deleteSeconds = $days * 86400;
-        $files = scandir($this->tmpPath);
+        $tmpPath = $this->getTmpPath();
+        $files = scandir($tmpPath);
 
         foreach ($files as $file) {
             if (in_array($file, ['.', '..'])) {
                 continue;
             }
 
-            $path = $this->tmpPath . DIRECTORY_SEPARATOR . $file;
+            $path = $tmpPath . DIRECTORY_SEPARATOR . $file;
 
             if (is_file($path)) {
                 $createdAt = filemtime($path);
@@ -110,7 +118,8 @@ class Ghostscript
      */
     public function getTmpFileCount()
     {
-        $files = scandir($this->tmpPath);
+        $tmpPath = $this->getTmpPath();
+        $files = scandir($tmpPath);
 
         $count = 0;
         foreach ($files as $file) {
@@ -118,7 +127,7 @@ class Ghostscript
                 continue;
             }
 
-            $path = $this->tmpPath . DIRECTORY_SEPARATOR . $file;
+            $path = $tmpPath . DIRECTORY_SEPARATOR . $file;
 
             if (is_file($path)) {
                 $pathInfo = pathinfo($path);
@@ -138,25 +147,18 @@ class Ghostscript
      * 
      * @throws Exception
      */
-    public function validateBinPath()
+    private function validateBinPath()
     {
-        if (!is_dir($this->binPath) && !is_file($this->binPath)) {
-            $this->throwException('The ghostscript binary path is not set.');
-        }
-    }
+        $binPath = $this->getBinPath();
 
-    /**
-     * Throw exception message
-     * 
-     * @param string $message
-     * 
-     * @return void
-     * 
-     * @throws Exception
-     */
-    private function throwException(string $message)
-    {
-        throw new Exception($message);
+        if (!is_dir($binPath) && !is_file($binPath)) {
+            $output = shell_exec($binPath . ' --version');
+            $version = floatval($output);
+
+            if ($version < 1) {
+                throw new Exception('The ghostscript binary path is not set.');
+            }
+        }
     }
 
     /**
@@ -208,28 +210,92 @@ class Ghostscript
     }
 
     /**
+     * Get execute Ghostscript options
+     * 
+     * @param array $options
+     * 
+     * @return void
+     */
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
+    }
+
+    /**
+     * Get execute Ghostscript options
+     * 
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * Get error message
+     * 
+     * @return string
+     */
+    public function getError()
+    {
+        return $this->error;
+    }
+
+    /**
+     * Set error message
+     * 
+     * @return string
+     */
+    protected function setError(string $error)
+    {
+        $this->error = $error;
+    }
+
+    /**
+     * Compose execution command
+     * 
+     * @param float $version
+     * @param string $tmpFile
+     * @param string $file
+     * 
+     * @return string
+     */
+    private function command(float $version, string $tmpFile, string $file)
+    {
+        $command = sprintf($this->command, $this->binPath, $version, $tmpFile, escapeshellarg($file));
+        $options = $this->getOptions();
+
+        if (!empty($options)) {
+            foreach ($options as $key => $value) {
+                if (!is_numeric($key)) {
+                    $command .= ' ' . $key . '=' . $value;
+                } else {
+                    $command .= ' ' . $value;
+                }
+            }
+        }
+
+        return $command;
+    }
+
+    /**
      * Guess PDF version
      * 
      * @param string $file
      * 
      * @return float
-     * 
-     * @throws Exception
      */
     public function guess(string $file)
     {
         $version = 0;
 
         if (!is_file($file)) {
-            $this->throwException($file . ' not exists.');
+            $this->setError($file . ' not exists.');
+
+            return $version;
         }
 
-        $fo = fopen($file, 'rb');
-
-        if (!$fo) {
-            $this->throwException($file . ' file can not open.');
-        }
-
+        $fo = @fopen($file, 'rb');
         fseek($fo, 0);
         preg_match('/%PDF-(\d\.\d)/', fread($fo, 1024), $match);
         fclose($fo);
@@ -256,24 +322,22 @@ class Ghostscript
         $file = $this->convertPathSeparator($file);
 
         if (!is_file($file)) {
-            $this->throwException('Failed to convert, ' . $file . ' not exists.');
+            $this->setError('Failed to convert, ' . $file . ' not exists.');
+
+            return $file;
         }
 
         $tmpFile = $this->generateTmpFile();
-        $command = sprintf(self::BASE_COMMAND, $this->binPath, $newVersion, $tmpFile, escapeshellarg($file));
+        $command = $this->command($newVersion, $tmpFile, $file);
         $output = shell_exec($command);
 
         if ($output) {
-            $this->throwException('Failed to convert ' . escapeshellarg($file) . '. Because ' . $output);
+            $this->setError('Failed to convert ' . $file . '. Because ' . $output);
+
+            return $file;
         }
 
-        if (!is_file($tmpFile)) {
-            $this->throwException('Failed to convert, ' . $tmpFile . ' not exists.');
-        }
-
-        if (!copy($tmpFile, $file)) {
-            $this->throwException('Failed to convert, ' . $file . ' not exists.');
-        }
+        copy($tmpFile, $file);
 
         return $file;
     }

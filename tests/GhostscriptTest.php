@@ -8,20 +8,23 @@ use Ordinary9843\Ghostscript;
 
 class GhostscriptTest extends TestCase
 {
-    /** @var string Test pdf file path */
-    private $testFile = __DIR__ . '/../files/test.pdf';
+    /** @var string Test PDF file path */
+    protected $testFile = __DIR__ . '/../files/test.pdf';
+
+    /** @var string Test PDF fake file path */
+    protected $fakeFile = __DIR__ . '/../files/fake.pdf';
 
     /** @var string Ghostscript binary absolute path */
-    private $binPath = '';
+    protected $binPath = '';
 
     /** @var string Temporary save file absolute path */
-    private $tmpPath = '';
+    protected $tmpPath = '';
 
     /** @var float Convert PDF version to 1.4 */
-    private $oldVersion = 1.4;
+    protected $oldVersion = 1.4;
 
     /** @var float Convert PDF version to 1.5 */
-    private $newVersion = 1.5;
+    protected $newVersion = 1.5;
 
     /**
      * This method is called before each test
@@ -52,8 +55,13 @@ class GhostscriptTest extends TestCase
     {
         $ghostscript = new Ghostscript($this->binPath);
         $binPath = $ghostscript->getBinPath();
-
+        
         $this->assertEquals($binPath, $this->binPath);
+
+        $output = shell_exec($this->binPath . ' --version');
+        $version = floatval($output);
+
+        $this->assertNotEquals($version, 0);
     }
 
     /**
@@ -66,7 +74,12 @@ class GhostscriptTest extends TestCase
         $ghostscript = new Ghostscript();
         $tmpPath = $ghostscript->getTmpPath();
 
-        $this->assertEquals($tmpPath, $this->tmpPath);
+        $this->assertEquals($tmpPath, sys_get_temp_dir());
+
+        $ghostscript = new Ghostscript($this->binPath, sys_get_temp_dir());
+        $tmpPath = $ghostscript->getTmpPath();
+
+        $this->assertEquals($tmpPath, sys_get_temp_dir());
     }
 
     /**
@@ -74,13 +87,13 @@ class GhostscriptTest extends TestCase
      * 
      * @return void
      */
-    public function testValidateBinPath()
-    {
-        $this->expectException('Exception');
+    // public function testValidateBinPath()
+    // {
+    //     $this->expectException('Exception');
 
-        $ghostscript = new Ghostscript();
-        $ghostscript->validateBinPath();
-    }
+    //     $ghostscript = new Ghostscript();
+    //     $ghostscript->convert();
+    // }
 
     /**
      * Test guess PDF version.
@@ -96,6 +109,12 @@ class GhostscriptTest extends TestCase
             $this->oldVersion,
             $this->newVersion
         ]);
+
+        $version = $ghostscript->guess($this->fakeFile);
+        $error = $ghostscript->getError();
+
+        $this->assertEquals($version, 0);
+        $this->assertNotEquals($error, '');
     }
 
     /**
@@ -115,6 +134,24 @@ class GhostscriptTest extends TestCase
         $version = $ghostscript->guess($this->testFile);
 
         $this->assertEquals($version, $this->oldVersion);
+
+        $ghostscript->convert($this->fakeFile, $this->newVersion);
+        $error = $ghostscript->getError();
+
+        $this->assertNotEquals($error, '');
+
+        $ghostscript->setOptions([
+            'dPDFSETTINGS' => '/screen',
+            'dNOPAUSE'
+        ]);
+        $ghostscript->convert($this->testFile, $this->newVersion);
+        $error = $ghostscript->getError();
+
+        $this->assertNotEquals($error, '');
+        $this->expectException('Exception');
+
+        $ghostscript->setBinPath('');
+        $ghostscript->convert($this->testFile, $this->newVersion);
     }
 
     /**
