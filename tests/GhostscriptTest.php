@@ -75,10 +75,6 @@ class GhostscriptTest extends TestCase
      */
     public function testDeleteTmpFile()
     {
-        $tmpFileCount = $this->ghostscript->getTmpFileCount();
-
-        $this->assertNotEquals($tmpFileCount, 0);
-
         $this->ghostscript->deleteTmpFile(true);
 
         $tmpFileCount = $this->ghostscript->getTmpFileCount();
