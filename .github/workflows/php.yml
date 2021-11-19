@@ -20,9 +20,14 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
+          coverage: xdebug
       - name: Install composer
         run: composer install --prefer-dist --no-interaction
       - name: Update composer
         run: composer self-update
       - name: Run tests
         run: composer test
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage.xml

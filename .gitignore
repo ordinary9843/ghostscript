@@ -1,7 +1,4 @@
 .idea/
-build/
-cache/
 vendor/
-composer.phar
-composer.lock
-coverage.clover
+/tests/report/
+coverage.xml
