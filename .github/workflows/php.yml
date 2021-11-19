@@ -4,20 +4,21 @@ on:
     branches: [master]
 jobs:
   run:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
+        operating-system: [ubuntu-latest]
         php-versions: ['7.1']
     name: PHP ${{ matrix.php-versions }}
     steps:
       - uses: actions/checkout@v2
-      - name: Setup PHP
+      - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-      - name: Install dependencies
+      - name: Install composer
         run: composer install --prefer-dist --no-interaction --dev
-      - name: Update packages
+      - name: Update composer
         run: composer self-update
-      - name: Run tests.
+      - name: Run tests
         run: composer test
