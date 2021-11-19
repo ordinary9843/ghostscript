@@ -4,7 +4,7 @@ Use ghostscript guess and convert PDF file version for PHP.
 ## Requirements
 This library has the following requirements:
 
- - PHP 7.1.33+
+ - PHP 7.1+
  - Ghostscript 9.50+
 
 ## Installation
@@ -23,8 +23,9 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Ordinary9843\Ghostscript;
 
-$binPath = '/usr/local/bin/gs';
-$ghostscript = new Ghostscript($binPath);
+$binPath = '/usr/local/gs';
+$tmpPath = '/tmp';
+$ghostscript = new Ghostscript($binPath, $tmpPath);
 $file = '../files/test.pdf';
 
 // Guess PDF version
