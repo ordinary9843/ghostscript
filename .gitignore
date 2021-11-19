@@ -1,4 +1,5 @@
 .idea/
 vendor/
 /tests/report/
+composer.json
 coverage.xml
