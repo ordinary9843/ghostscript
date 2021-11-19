@@ -12,6 +12,8 @@ jobs:
     name: PHP ${{ matrix.php-versions }}
     steps:
       - uses: actions/checkout@v2
+      - name: Update apt
+        run: apt update
       - name: Install Ghostscript
         run: apt install ghostscript
       - name: Install PHP
