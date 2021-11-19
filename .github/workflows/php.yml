@@ -22,6 +22,8 @@ jobs:
         run: composer install --prefer-dist --no-interaction
       - name: Display path
         run: pwd
+      - name: Display files
+        run: ls -al
       - name: Update composer
         run: composer self-update
       - name: Run tests
