@@ -33,6 +33,8 @@ class GhostscriptTest extends TestCase
             $tmpPath = '/tmp';
         }
 
+        print_r(exec('which gs'));die;
+
         $this->ghostscript = new Ghostscript($binPath, $tmpPath);
     }
 
