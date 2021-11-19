@@ -3,10 +3,9 @@ on:
   push:
     branches: [master]
 jobs:
-  runs-on: ${{ matrix.operating-system }}
+  runs-on: ubuntu-latest
   strategy:
     matrix:
-      operating-system: [ubuntu-latest]
       php-versions: ['7.1'],
   name: PHP ${{ matrix.php-versions }}
   steps:
