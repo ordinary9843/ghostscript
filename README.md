@@ -42,6 +42,10 @@ echo 'New file path: ' . $file . '<br />';
 
 // Can also be delete temporary file
 $ghostscript->deleteTmpFile();
+
+// Get error message
+$error = $ghostscript->getError();
+echo 'error = ' . $error;
 ```
 
 ## Testing
