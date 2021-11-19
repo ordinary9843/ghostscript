@@ -12,10 +12,10 @@ jobs:
     name: PHP ${{ matrix.php-versions }}
     steps:
       - uses: actions/checkout@v2
-      - name: Update apt
-        run: apt update
+      - name: Update advanced packaging tools
+        run: sudo apt update
       - name: Install Ghostscript
-        run: apt install ghostscript
+        run: sudo apt install ghostscript
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
