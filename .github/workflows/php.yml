@@ -23,7 +23,7 @@ jobs:
       - name: Install composer
         run: composer install --prefer-dist --no-interaction
       - name: Display path
-          run: pwd
+        run: pwd
       - name: Update composer
         run: composer self-update
       - name: Run tests
