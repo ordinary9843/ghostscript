@@ -14,16 +14,14 @@ jobs:
       - uses: actions/checkout@v2
       - name: Update advanced packaging tools
         run: sudo apt update
+      - name: Install Ghostscript
+        run: sudo apt install ghostscript
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
       - name: Install composer
         run: composer install --prefer-dist --no-interaction
-      - name: Display path
-        run: pwd
-      - name: Display files
-        run: ls -al
       - name: Update composer
         run: composer self-update
       - name: Run tests
