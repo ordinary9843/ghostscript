@@ -16,5 +16,13 @@ jobs:
         run: sudo apt update
       - name: Install Ghostscript
         run: sudo apt install ghostscript
-      - name: Which Ghostscript
-        run: which gs
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+      - name: Install composer
+        run: composer install --prefer-dist --no-interaction
+      - name: Update composer
+        run: composer self-update
+      - name: Run tests
+        run: composer test
