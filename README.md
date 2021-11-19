@@ -41,7 +41,9 @@ $ghostscript->deleteTmpFile();
 ```
 
 ## Testing
-Reference tests/GhostscriptTest.php
+```bash
+vendor/bin/phpunit
+```
 
 ## Licenses
 (The [MIT](http://www.opensource.org/licenses/mit-license.php) License)
