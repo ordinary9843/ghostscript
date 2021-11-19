@@ -1,4 +1,4 @@
-name: PHP
+name: build
 on:
   push:
     branches: [master]
@@ -14,7 +14,6 @@ jobs:
           uses: shivammathur/setup-php@v2
           with:
             php-version: ${{ matrix.php-versions }}
-            extensions: mbstring, intl, zip, ctype, json
       - name: Install dependencies
         run: composer install --prefer-dist --no-interaction --dev
       - name: Update packages
