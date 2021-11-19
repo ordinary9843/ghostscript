@@ -22,6 +22,8 @@ jobs:
           php-version: ${{ matrix.php-versions }}
       - name: Install composer
         run: composer install --prefer-dist --no-interaction
+      - name: Display path
+          run: pwd
       - name: Update composer
         run: composer self-update
       - name: Run tests
