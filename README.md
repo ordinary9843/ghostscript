@@ -2,7 +2,7 @@
 [![build](https://github.com/ordinary9843/ghostscript/actions/workflows/php.yml/badge.svg)](https://github.com/ordinary9843/ghostscript/actions/workflows/php.yml)
 [![codecov](https://codecov.io/gh/ordinary9843/ghostscript/branch/master/graph/badge.svg?token=DMXRZFN55V)](https://codecov.io/gh/ordinary9843/ghostscript)
 
-Use ghostscript guess and convert PDF file version for PHP.
+Use ghostscript guess and convert PDF file version for PHP. Fix FPDF error: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.
 
 ## Requirements
 This library has the following requirements:
