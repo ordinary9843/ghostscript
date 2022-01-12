@@ -10,7 +10,7 @@ class Ghostscript
     const TMP_FILE_PREFIX = 'ghostscript_tmp_file_';
 
     /** @var string Ghostscript convert PDF command */
-    protected $command = '%s -sDEVICE=pdfwrite -dCompatibilityLevel=%s -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -dColorConversionStrategy=/LeaveColorUnchanged -dEncodeColorImages=false -dEncodeGrayImages=false -dEncodeMonoImages=false -dDownsampleMonoImages=false -dDownsampleGrayImages=false -dDownsampleColorImages=false -dAutoFilterColorImages=false -dAutoFilterGrayImages=false -dColorImageFilter=/FlateEncode -dGrayImageFilter=/FlateEncode -sOutputFile=%s %s';
+    protected $command = '%s -sDEVICE=pdfwrite -dCompatibilityLevel=%s -dNOPAUSE -dQUIET -dBATCH -sOutputFile=%s %s';
 
     /** @var string Ghostscript binary absolute path */
     private $binPath = '';
