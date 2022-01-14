@@ -13,16 +13,16 @@ class Ghostscript
     protected $command = '%s -sDEVICE=pdfwrite -dCompatibilityLevel=%s -dNOPAUSE -dQUIET -dBATCH -sOutputFile=%s %s';
 
     /** @var string Ghostscript binary absolute path */
-    private $binPath = '';
+    protected $binPath = '';
 
     /** @var string Temporary save file absolute path */
-    private $tmpPath = '';
+    protected $tmpPath = '';
 
     /** @var array Ghostscript options */
-    private $options = [];
+    protected $options = [];
 
     /** @var string Error message */
-    private $error = '';
+    protected $error = '';
 
     /**
      * Initialize
