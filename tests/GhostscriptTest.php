@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
 use Ordinary9843\Ghostscript;
 
@@ -83,19 +82,6 @@ class GhostscriptTest extends TestCase
     }
 
     /**
-     * Test check Ghostscript binary absolute path does it exist
-     * 
-     * @return void
-     */
-    // public function testValidateBinPath()
-    // {
-    //     $this->expectException('Exception');
-
-    //     $ghostscript = new Ghostscript();
-    //     $ghostscript->convert();
-    // }
-
-    /**
      * Test guess PDF version.
      * 
      * @return void
@@ -141,8 +127,7 @@ class GhostscriptTest extends TestCase
         $this->assertNotEquals($error, '');
 
         $ghostscript->setOptions([
-            'dPDFSETTINGS' => '/screen',
-            'dNOPAUSE'
+            '-dPDFSETTINGS' => '/screen'
         ]);
         $ghostscript->convert($this->testFile, $this->newVersion);
         $error = $ghostscript->getError();

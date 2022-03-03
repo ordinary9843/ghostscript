@@ -93,7 +93,6 @@ class Ghostscript
             }
 
             $path = $tmpPath . DIRECTORY_SEPARATOR . $file;
-
             if (is_file($path)) {
                 $createdAt = filemtime($path);
                 $isExpired = time() - $createdAt > $deleteSeconds;
@@ -127,7 +126,6 @@ class Ghostscript
             }
 
             $path = $tmpPath . DIRECTORY_SEPARATOR . $file;
-
             if (is_file($path)) {
                 $pathInfo = pathinfo($path);
                 $filename = $pathInfo['filename'];
@@ -149,13 +147,14 @@ class Ghostscript
     private function validateBinPath()
     {
         $binPath = $this->getBinPath();
-
-        if (!is_dir($binPath) && !is_file($binPath)) {
+        if (!$binPath) {
+            throw new Exception('The ghostscript binary path is not set.');
+        } elseif (!is_dir($binPath) && !is_file($binPath)) {
             $output = shell_exec($binPath . ' --version');
             $version = floatval($output);
 
             if ($version < 1) {
-                throw new Exception('The ghostscript binary path is not set.');
+                throw new Exception('The ghostscript binary path is invalid.');
             }
         }
     }
@@ -263,7 +262,6 @@ class Ghostscript
     {
         $command = sprintf($this->command, $this->binPath, $version, $tmpFile, escapeshellarg($file));
         $options = $this->getOptions();
-
         if (!empty($options)) {
             foreach ($options as $key => $value) {
                 if (!is_numeric($key)) {
@@ -319,7 +317,6 @@ class Ghostscript
         $this->validateBinPath();
 
         $file = $this->convertPathSeparator($file);
-
         if (!is_file($file)) {
             $this->setError('Failed to convert, ' . $file . ' not exists.');
 
@@ -329,7 +326,6 @@ class Ghostscript
         $tmpFile = $this->generateTmpFile();
         $command = $this->command($newVersion, $tmpFile, $file);
         $output = shell_exec($command);
-
         if ($output) {
             $this->setError('Failed to convert ' . $file . '. Because ' . $output);
 
