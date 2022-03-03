@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Ordinary9843\Ghostscript;
 
@@ -35,7 +36,6 @@ class GhostscriptTest extends TestCase
         parent::setUp();
 
         $isWindows = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
-
         if ($isWindows === true) {
             $this->binPath = 'C:\gs\gs9.55.0\bin\gswin64c.exe';
         } else {
@@ -127,16 +127,24 @@ class GhostscriptTest extends TestCase
         $this->assertNotEquals($error, '');
 
         $ghostscript->setOptions([
-            '-dPDFSETTINGS' => '/screen'
+            '-dPDFSETTINGS' => '/screen',
+            '-dNOPAUSE'
         ]);
         $ghostscript->convert($this->testFile, $this->newVersion);
         $error = $ghostscript->getError();
 
         $this->assertNotEquals($error, '');
-        $this->expectException('Exception');
 
-        $ghostscript->setBinPath('');
-        $ghostscript->convert($this->testFile, $this->newVersion);
+        try {
+            $ghostscript->setBinPath('');
+            $ghostscript->convert($this->testFile, $this->newVersion);
+
+            $isSuccess = true;
+        } catch (Exception $e) {
+            $isSuccess = false;
+        }
+
+        $this->assertFalse($isSuccess);
     }
 
     /**

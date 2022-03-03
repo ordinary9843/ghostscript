@@ -147,12 +147,11 @@ class Ghostscript
     private function validateBinPath()
     {
         $binPath = $this->getBinPath();
-        if (!$binPath) {
+        if (!is_dir($binPath) && !is_file($binPath)) {
             throw new Exception('The ghostscript binary path is not set.');
-        } elseif (!is_dir($binPath) && !is_file($binPath)) {
+        } else {
             $output = shell_exec($binPath . ' --version');
             $version = floatval($output);
-
             if ($version < 1) {
                 throw new Exception('The ghostscript binary path is invalid.');
             }
