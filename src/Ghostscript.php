@@ -29,8 +29,6 @@ class Ghostscript
      * 
      * @param string $binPath
      * @param string $tmpPath
-     * 
-     * @return void
      */
     public function __construct(string $binPath = '', string $tmpPath = '')
     {
@@ -56,7 +54,7 @@ class Ghostscript
      * 
      * @return string
      */
-    protected function convertPathSeparator(string $path)
+    protected function convertPathSeparator(string $path): string
     {
         $path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
 
@@ -68,7 +66,7 @@ class Ghostscript
      * 
      * @return string
      */
-    private function generateTmpFile()
+    private function generateTmpFile(): string
     {
         return $this->getTmpPath() . DIRECTORY_SEPARATOR . uniqid(self::TMP_FILE_PREFIX) . '.pdf';
     }
@@ -81,7 +79,7 @@ class Ghostscript
      * 
      * @return void
      */
-    public function deleteTmpFile(bool $isForceDelete = false, int $days = 7)
+    public function deleteTmpFile(bool $isForceDelete = false, int $days = 7): void
     {
         $deleteSeconds = $days * 86400;
         $tmpPath = $this->getTmpPath();
@@ -114,7 +112,7 @@ class Ghostscript
      * 
      * @return int
      */
-    public function getTmpFileCount()
+    public function getTmpFileCount(): int
     {
         $tmpPath = $this->getTmpPath();
         $files = scandir($tmpPath);
@@ -144,7 +142,7 @@ class Ghostscript
      * 
      * @throws Exception
      */
-    private function validateBinPath()
+    private function validateBinPath(): void
     {
         $binPath = $this->getBinPath();
         if (!is_dir($binPath) && !is_file($binPath)) {
@@ -159,7 +157,7 @@ class Ghostscript
      * 
      * @return void
      */
-    public function setBinPath(string $binPath)
+    public function setBinPath(string $binPath): void
     {
         $binPath = $this->convertPathSeparator($binPath);
 
@@ -171,7 +169,7 @@ class Ghostscript
      * 
      * @return string
      */
-    public function getBinPath()
+    public function getBinPath(): string
     {
         return $this->binPath;
     }
@@ -183,7 +181,7 @@ class Ghostscript
      * 
      * @return void
      */
-    public function setTmpPath(string $tmpPath)
+    public function setTmpPath(string $tmpPath): void
     {
         $tmpPath = $this->convertPathSeparator($tmpPath);
 
@@ -195,7 +193,7 @@ class Ghostscript
      * 
      * @return string
      */
-    public function getTmpPath()
+    public function getTmpPath(): string
     {
         return $this->tmpPath;
     }
@@ -207,7 +205,7 @@ class Ghostscript
      * 
      * @return void
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }
@@ -217,7 +215,7 @@ class Ghostscript
      * 
      * @return array
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
@@ -227,7 +225,7 @@ class Ghostscript
      * 
      * @return string
      */
-    public function getError()
+    public function getError(): string
     {
         return $this->error;
     }
@@ -235,9 +233,9 @@ class Ghostscript
     /**
      * Set error message
      * 
-     * @return string
+     * @return void
      */
-    protected function setError(string $error)
+    protected function setError(string $error): void
     {
         $this->error = $error;
     }
@@ -251,7 +249,7 @@ class Ghostscript
      * 
      * @return string
      */
-    private function command(float $version, string $tmpFile, string $file)
+    private function command(float $version, string $tmpFile, string $file): string
     {
         $command = sprintf($this->command, $this->binPath, $version, $tmpFile, escapeshellarg($file));
         $options = $this->getOptions();
@@ -275,7 +273,7 @@ class Ghostscript
      * 
      * @return float
      */
-    public function guess(string $file)
+    public function guess(string $file): float
     {
         $version = 0;
 
@@ -290,7 +288,7 @@ class Ghostscript
         preg_match('/%PDF-(\d\.\d)/', fread($fo, 1024), $match);
         fclose($fo);
 
-        $version = $match[1] ?? $version;
+        $version = (float)($match[1] ?? $version);
 
         return $version;
     }
@@ -305,7 +303,7 @@ class Ghostscript
      * 
      * @throws Exception
      */
-    public function convert(string $file, float $newVersion)
+    public function convert(string $file, float $newVersion): string
     {
         $this->validateBinPath();
 
