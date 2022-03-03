@@ -149,12 +149,6 @@ class Ghostscript
         $binPath = $this->getBinPath();
         if (!is_dir($binPath) && !is_file($binPath)) {
             throw new Exception('The ghostscript binary path is not set.');
-        } else {
-            $output = shell_exec($binPath . ' --version');
-            $version = floatval($output);
-            if ($version < 1) {
-                throw new Exception('The ghostscript binary path is invalid.');
-            }
         }
     }
 

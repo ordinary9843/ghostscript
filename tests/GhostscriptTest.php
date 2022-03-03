@@ -135,16 +135,19 @@ class GhostscriptTest extends TestCase
 
         $this->assertNotEquals($error, '');
 
-        try {
-            $ghostscript->setBinPath('');
-            $ghostscript->convert($this->testFile, $this->newVersion);
+        $ghostscript->setBinPath($this->binPath);
+        $ghostscript->setOptions([
+            '-dCompatibilityLevel=test'
+        ]);
+        $ghostscript->convert($this->testFile, $this->newVersion);
+        $error = $ghostscript->getError();
 
-            $isSuccess = true;
-        } catch (Exception $e) {
-            $isSuccess = false;
-        }
+        $this->assertNotEquals($error, '');
 
-        $this->assertFalse($isSuccess);
+        $this->expectException('Exception');
+
+        $ghostscript->setBinPath('');
+        $ghostscript->convert($this->testFile, $this->newVersion);
     }
 
     /**
