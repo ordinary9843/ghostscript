@@ -31,7 +31,7 @@ class GhostscriptTest extends TestCase
      * 
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -50,7 +50,7 @@ class GhostscriptTest extends TestCase
      * 
      * @return void
      */
-    public function testBinPath()
+    public function testBinPath(): void
     {
         $ghostscript = new Ghostscript($this->binPath);
         $binPath = $ghostscript->getBinPath();
@@ -68,7 +68,7 @@ class GhostscriptTest extends TestCase
      * 
      * @return void
      */
-    public function testTmpPath()
+    public function testTmpPath(): void
     {
         $ghostscript = new Ghostscript();
         $tmpPath = $ghostscript->getTmpPath();
@@ -86,7 +86,7 @@ class GhostscriptTest extends TestCase
      * 
      * @return void
      */
-    public function testGuess()
+    public function testGuess(): void
     {
         $ghostscript = new Ghostscript($this->binPath, $this->tmpPath);
         $version = $ghostscript->guess($this->testFile);
@@ -108,7 +108,7 @@ class GhostscriptTest extends TestCase
      * 
      * @return void
      */
-    public function testConvert()
+    public function testConvert(): void
     {
         $ghostscript = new Ghostscript($this->binPath, $this->tmpPath);
         $ghostscript->convert($this->testFile, $this->newVersion);
@@ -155,7 +155,7 @@ class GhostscriptTest extends TestCase
      * 
      * @return void
      */
-    public function testDeleteTmpFile()
+    public function testDeleteTmpFile(): void
     {
         $ghostscript = new Ghostscript($this->binPath, $this->tmpPath);
         $ghostscript->deleteTmpFile(true);

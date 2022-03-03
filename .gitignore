@@ -3,3 +3,4 @@ vendor/
 /tests/report/
 composer.lock
 coverage.xml
+.phpunit.result.cache
