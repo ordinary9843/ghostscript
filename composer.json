@@ -1,0 +1,31 @@
+{
+  "name": "ordinary9843/ghostscript",
+  "description": "Use Ghostscript to merge / split all PDF files or guess and convert PDF file version. Fix FPDI error by Ghostscript: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Software Engineer"
+    }
+  ],
+  "require": {
+    "php": "^7.1||^8.0",
+    "vlucas/phpdotenv": "^5.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": ">7.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Ordinary9843\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "php vendor/bin/phpunit --coverage-clover ./coverage.xml --coverage-html ./report"
+  }
+}
