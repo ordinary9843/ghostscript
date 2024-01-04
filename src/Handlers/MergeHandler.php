@@ -70,7 +70,7 @@ class MergeHandler extends Handler implements HandlerInterface
                 )
             );
             if ($output) {
-                throw new ExecuteException('Failed to merge ' . $file . ', because ' . $output);
+                throw new ExecuteException('Failed to merge "' . $file . '", because ' . $output . '.');
             }
         } catch (Exception $e) {
             $this->getFileSystem()->delete($file);

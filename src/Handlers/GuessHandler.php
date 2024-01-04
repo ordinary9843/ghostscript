@@ -19,7 +19,7 @@ class GuessHandler extends Handler implements HandlerInterface
         try {
             $file = $arguments[0] ?? '';
             if (!$this->getFileSystem()->isFile($file)) {
-                throw new ExecuteException('Failed to convert, ' . $file . ' is not exist');
+                throw new ExecuteException('Failed to convert, "' . $file . '" is not exist.');
             }
 
             $fo = @fopen($file, 'rb');

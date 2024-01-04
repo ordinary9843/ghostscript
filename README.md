@@ -107,7 +107,7 @@ $ghostscript->hasMessages(MessageConstant::TYPE_ERROR);
  * Get all execution messages.
  *
  * Output: [
- *  '[ERROR] Message'
+ *  '[ERROR] Message.'
  * ]
  */
 $ghostscript->getMessages(MessageConstant::TYPE_ERROR);

@@ -30,7 +30,7 @@ class SplitHandler extends Handler implements HandlerInterface
             $path = $arguments[1] ?? '';
             $totalPage = $this->getPdfTotalPage($file);
             if ($totalPage < 1) {
-                throw new ExecuteException('Failed to read the total number of pages in ' . $file);
+                throw new ExecuteException('Failed to read the total number of pages in "' . $file . '".');
             }
 
             (!$this->getFileSystem()->isDir($path)) && mkdir($path, 0755);
@@ -47,7 +47,7 @@ class SplitHandler extends Handler implements HandlerInterface
                 )
             );
             if ($output) {
-                throw new ExecuteException('Failed to merge ' . $file . ', because ' . $output);
+                throw new ExecuteException('Failed to merge "' . $file . '", because ' . $output . '.');
             }
 
             $parts = array_map(function ($i) use ($path) {

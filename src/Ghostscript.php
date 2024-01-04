@@ -71,7 +71,7 @@ class Ghostscript
             case 'hasMessages':
                 return $this->handler->hasMessages(current($arguments));
             default:
-                throw new InvalidMethodException('Invalid method: ' . $name, 0, null, [
+                throw new InvalidMethodException('Invalid method: "' . $name . '".', 0, null, [
                     'arguments' => $arguments
                 ]);
         }

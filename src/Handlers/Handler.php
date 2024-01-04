@@ -235,9 +235,9 @@ class Handler implements HandlerInterface
             $this->validateBinPath();
 
             if (!$this->getFileSystem()->isFile($file)) {
-                throw new InvalidFilePathException($file . ' is not exist.');
+                throw new InvalidFilePathException('"' . $file . '" is not exist.');
             } elseif (!$this->isPdf($file)) {
-                throw new InvalidFileTypeException($file . ' is not PDF.');
+                throw new InvalidFileTypeException('"' . $file . '" is not PDF.');
             }
 
             $output = shell_exec(
@@ -303,6 +303,6 @@ class Handler implements HandlerInterface
      */
     public function execute(...$arguments)
     {
-        throw new ExecuteException('The method has not implemented yet');
+        throw new ExecuteException('The method has not implemented yet.');
     }
 }

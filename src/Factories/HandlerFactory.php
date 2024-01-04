@@ -24,7 +24,7 @@ class HandlerFactory
         $class = 'Ordinary9843\\Handlers\\' . ucfirst($handlerType) . 'Handler';
         if (!isset(self::$handlers[$class])) {
             if (!class_exists($class)) {
-                throw new ClassNotFoundException('Handler class ' . $class . ' does not exist');
+                throw new ClassNotFoundException('Handler class "' . $class . '" does not exist.');
             }
             self::$handlers[$class] = new $class($config);
         } else {

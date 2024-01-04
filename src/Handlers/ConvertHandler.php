@@ -27,9 +27,9 @@ class ConvertHandler extends Handler implements HandlerInterface
             $file = PathHelper::convertPathSeparator($arguments[0] ?? '');
             $version = $arguments[1] ?? 0;
             if (!$this->getFileSystem()->isFile($file)) {
-                throw new ExecuteException($file . ' is not exist.');
+                throw new ExecuteException('"' . $file . '" is not exist.');
             } elseif (!$this->isPdf($file)) {
-                throw new ExecuteException($file . ' is not PDF.');
+                throw new ExecuteException('"' . $file . '" is not PDF.');
             }
 
             $tmpFile = $this->getTmpFile();
@@ -45,7 +45,7 @@ class ConvertHandler extends Handler implements HandlerInterface
                 )
             );
             if ($output) {
-                throw new ExecuteException('Failed to convert ' . $file . ', because ' . $output);
+                throw new ExecuteException('Failed to convert "' . $file . '", because ' . $output . '.');
             }
 
             @copy($tmpFile, $file);

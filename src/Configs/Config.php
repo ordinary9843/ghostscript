@@ -90,7 +90,7 @@ class Config
     {
         $binPath = $this->getBinPath();
         if (!$binPath || !self::$fileSystem->isValid($binPath) || !preg_match('/\d+.\d+/', shell_exec($binPath . ' --version'))) {
-            throw new InvalidFilePathException('The Ghostscript binary path is not set', 0, null, [
+            throw new InvalidFilePathException('The Ghostscript binary path is not set.', 0, null, [
                 'binPath' => $binPath
             ]);
         }
