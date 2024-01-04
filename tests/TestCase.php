@@ -23,7 +23,7 @@ class TestCase extends BaseTestCase
      *
      * @return string|bool|int|float|null
      */
-    public function getEnv(string $key, string $default = '')
+    protected function getEnv(string $key, string $default = '')
     {
         if (self::$dotenv === null) {
             self::$dotenv = Dotenv::createImmutable(dirname(__DIR__, 1));
@@ -39,7 +39,7 @@ class TestCase extends BaseTestCase
      *
      * @return bool
      */
-    public function isPhpUnitVersionInRange(string $minVersion, string $maxVersion): bool
+    protected function isPhpUnitVersionInRange(string $minVersion, string $maxVersion): bool
     {
         $currentVersion = Version::id();
 
