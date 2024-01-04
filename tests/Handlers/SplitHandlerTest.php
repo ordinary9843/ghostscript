@@ -36,13 +36,14 @@ class SplitHandlerTest extends TestCase
      */
     public function testExecuteWithNotExistFileShouldReturnErrorMessage(): void
     {
+        $methods = ['getPdfTotalPage', 'getConfig'];
         if ($this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9)) {
             $splitHandler = $this->getMockBuilder(SplitHandler::class)
-                ->setMethods(['getPdfTotalPage', 'getConfig'])
+                ->setMethods($methods)
                 ->getMock();
         } else {
             $splitHandler = $this->getMockBuilder(SplitHandler::class)
-                ->onlyMethods(['getPdfTotalPage', 'getConfig'])
+                ->onlyMethods($methods)
                 ->getMock();
         }
 

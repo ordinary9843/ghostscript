@@ -30,13 +30,7 @@ class GuessHandlerTest extends TestCase
         $guessHandler = new GuessHandler();
         $guessHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
         $this->assertEquals(0.0, $guessHandler->execute($file));
-
-        if ($this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9)) {
-            $this->assertFileNotExists($file);
-        } else {
-            $this->assertFileDoesNotExist($file);
-        }
-
+        $this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9) ? $this->assertFileNotExists($file) : $this->assertFileDoesNotExist($file);
         $this->assertTrue($guessHandler->hasMessages(MessageConstant::TYPE_ERROR));
     }
 }

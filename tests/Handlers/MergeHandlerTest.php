@@ -71,14 +71,14 @@ class MergeHandlerTest extends TestCase
     public function testExecuteWithNotPdfShouldReturnErrorMessage(): void
     {
         $file = dirname(__DIR__, 2) . '/files/merge/test.pdf';
-
+        $methods = ['isPdf', 'getConfig'];
         if ($this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9)) {
             $mergeHandler = $this->getMockBuilder(MergeHandler::class)
-                ->setMethods(['isPdf', 'getConfig'])
+                ->setMethods($methods)
                 ->getMock();
         } else {
             $mergeHandler = $this->getMockBuilder(MergeHandler::class)
-                ->onlyMethods(['isPdf', 'getConfig'])
+                ->onlyMethods($methods)
                 ->getMock();
         }
 
@@ -112,13 +112,7 @@ class MergeHandlerTest extends TestCase
             dirname(__DIR__, 2) . '/files/merge/part_3.pdf'
         ]);
         $this->assertNotEquals($file, $mergedFile);
-
-        if ($this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9)) {
-            $this->assertFileNotExists($mergedFile);
-        } else {
-            $this->assertFileDoesNotExist($mergedFile);
-        }
-
+        $this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9) ? $this->assertFileNotExists($mergedFile) : $this->assertFileDoesNotExist($mergedFile);
         $this->assertTrue($mergeHandler->hasMessages(MessageConstant::TYPE_ERROR));
     }
 }

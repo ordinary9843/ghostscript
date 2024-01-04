@@ -53,13 +53,7 @@ class ConvertHandlerTest extends TestCase
         ]));
         $convertedFile = $convertHandler->execute($file, 1.5);
         $this->assertNotEquals($file, $convertedFile);
-
-        if ($this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9)) {
-            $this->assertFileNotExists($convertedFile);
-        } else {
-            $this->assertFileDoesNotExist($convertedFile);
-        }
-
+        $this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9) ? $this->assertFileNotExists($convertedFile) : $this->assertFileDoesNotExist($convertedFile);
         $this->assertTrue($convertHandler->hasMessages(MessageConstant::TYPE_ERROR));
     }
 
@@ -69,14 +63,14 @@ class ConvertHandlerTest extends TestCase
     public function testExecuteWithNotPdfShouldReturnErrorMessage(): void
     {
         $file = dirname(__DIR__, 2) . '/files/convert/test.pdf';
-
+        $methods = ['isPdf', 'getConfig'];
         if ($this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9)) {
             $convertHandler = $this->getMockBuilder(ConvertHandler::class)
-                ->setMethods(['isPdf', 'getConfig'])
+                ->setMethods($methods)
                 ->getMock();
         } else {
             $convertHandler = $this->getMockBuilder(ConvertHandler::class)
-                ->onlyMethods(['isPdf', 'getConfig'])
+                ->onlyMethods($methods)
                 ->getMock();
         }
 
@@ -84,13 +78,7 @@ class ConvertHandlerTest extends TestCase
         $convertHandler->method('isPdf')->willReturn(false);
         $convertedFile = $convertHandler->execute($file, 1.5);
         $this->assertNotEquals($file, $convertedFile);
-
-        if ($this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9)) {
-            $this->assertFileNotExists($convertedFile);
-        } else {
-            $this->assertFileDoesNotExist($convertedFile);
-        }
-
+        $this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9) ? $this->assertFileNotExists($convertedFile) : $this->assertFileDoesNotExist($convertedFile);
         $this->assertTrue($convertHandler->hasMessages(MessageConstant::TYPE_ERROR));
     }
 
@@ -108,13 +96,7 @@ class ConvertHandlerTest extends TestCase
         ]);
         $convertedFile = $convertHandler->execute($file, 1.5);
         $this->assertNotEquals($file, $convertedFile);
-
-        if ($this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9)) {
-            $this->assertFileNotExists($convertedFile);
-        } else {
-            $this->assertFileDoesNotExist($convertedFile);
-        }
-
+        $this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9) ? $this->assertFileNotExists($convertedFile) : $this->assertFileDoesNotExist($convertedFile);
         $this->assertTrue($convertHandler->hasMessages(MessageConstant::TYPE_ERROR));
     }
 }

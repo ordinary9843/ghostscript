@@ -163,22 +163,20 @@ class HandlerTest extends TestCase
         $fileSystem->method('isFile')->willReturn(true);
         $fileSystem->method('isValid')->willReturn(true);
         $file = dirname(__DIR__, 2) . '/files/gs_- test/test.txt';
-
+        $config = new Config([
+            'binPath' => $this->getEnv('GS_BIN_PATH'),
+            'fileSystem' => $fileSystem
+        ]);
+        $methods = ['isPdf'];
         if ($this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9)) {
             $handler = $this->getMockBuilder(Handler::class)
-                ->setConstructorArgs([new Config([
-                    'binPath' => $this->getEnv('GS_BIN_PATH'),
-                    'fileSystem' => $fileSystem
-                ])])
-                ->setMethods(['isPdf'])
+                ->setConstructorArgs([$config])
+                ->setMethods($methods)
                 ->getMock();
         } else {
             $handler = $this->getMockBuilder(Handler::class)
-                ->setConstructorArgs([new Config([
-                    'binPath' => $this->getEnv('GS_BIN_PATH'),
-                    'fileSystem' => $fileSystem
-                ])])
-                ->onlyMethods(['isPdf'])
+                ->setConstructorArgs([$config])
+                ->onlyMethods($methods)
                 ->getMock();
         }
 
