@@ -2,7 +2,7 @@
 
 namespace Tests\Traits;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Ordinary9843\Traits\MessageTrait;
 use Ordinary9843\Constants\MessageConstant;
 

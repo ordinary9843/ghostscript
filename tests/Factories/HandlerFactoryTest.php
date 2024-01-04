@@ -2,13 +2,13 @@
 
 namespace Tests\Factories;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Ordinary9843\Configs\Config;
 use Ordinary9843\Handlers\Handler;
 use Ordinary9843\Factories\HandlerFactory;
 use Ordinary9843\Exceptions\ClassNotFoundException;
 
-class HandlerTest extends TestCase
+class HandlerFactoryTest extends TestCase
 {
     /**
      * @return void

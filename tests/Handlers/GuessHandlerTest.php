@@ -2,8 +2,7 @@
 
 namespace Tests\Handlers;
 
-use PHPUnit\Framework\TestCase;
-use Ordinary9843\Helpers\EnvHelper;
+use Tests\TestCase;
 use Ordinary9843\Handlers\GuessHandler;
 use Ordinary9843\Constants\MessageConstant;
 
@@ -16,7 +15,7 @@ class GuessHandlerTest extends TestCase
     {
         $file = dirname(__DIR__, 2) . '/files/guess/test.pdf';
         $guessHandler = new GuessHandler();
-        $guessHandler->setBinPath(EnvHelper::get('GS_BIN_PATH'));
+        $guessHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
         $this->assertEquals(1.5, $guessHandler->execute($file));
         $this->assertFileExists($file);
         $this->assertFalse($guessHandler->hasMessages(MessageConstant::TYPE_ERROR));
@@ -29,9 +28,15 @@ class GuessHandlerTest extends TestCase
     {
         $file = dirname(__DIR__, 2) . '/files/guess/part_4.pdf';
         $guessHandler = new GuessHandler();
-        $guessHandler->setBinPath(EnvHelper::get('GS_BIN_PATH'));
+        $guessHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
         $this->assertEquals(0.0, $guessHandler->execute($file));
-        $this->assertFileNotExists($file);
+
+        if ($this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9)) {
+            $this->assertFileNotExists($file);
+        } else {
+            $this->assertFileDoesNotExist($file);
+        }
+
         $this->assertTrue($guessHandler->hasMessages(MessageConstant::TYPE_ERROR));
     }
 }

@@ -1,11 +1,13 @@
 .vscode/
 .idea/
+.phpunit.cache/
 vendor/
 report/
 files/split/parts/
 files/merge/test.pdf
 composer.lock
 coverage.xml
+phpunit.xml
 .phpunit.result.cache
 .DS_Store
 .env

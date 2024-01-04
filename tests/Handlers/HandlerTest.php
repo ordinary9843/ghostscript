@@ -2,11 +2,10 @@
 
 namespace Tests\Handlers;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Ordinary9843\Configs\Config;
 use Ordinary9843\Cores\FileSystem;
 use Ordinary9843\Handlers\Handler;
-use Ordinary9843\Helpers\EnvHelper;
 use Ordinary9843\Exceptions\Exception;
 use Ordinary9843\Exceptions\InvalidFilePathException;
 
@@ -18,7 +17,7 @@ class HandlerTest extends TestCase
     public function testSetConfigShouldEqualGetConfig(): void
     {
         $config = new Config([
-            'binPath' => EnvHelper::get('GS_BIN_PATH'),
+            'binPath' => $this->getEnv('GS_BIN_PATH'),
             'tmpPath' => sys_get_temp_dir()
         ]);
         $handler = new Handler();
@@ -42,7 +41,7 @@ class HandlerTest extends TestCase
      */
     public function testSetBinPathShouldEqualGetBinPath(): void
     {
-        $binPath = EnvHelper::get('GS_BIN_PATH');
+        $binPath = $this->getEnv('GS_BIN_PATH');
         $handler = new Handler();
         $handler->setBinPath($binPath);
         $this->assertEquals($binPath, $handler->getBinPath());
@@ -139,7 +138,7 @@ class HandlerTest extends TestCase
     {
         $file = dirname(__DIR__, 2) . '/files/gs_ -test/test.pdf';
         $config = new Config([
-            'binPath' => EnvHelper::get('GS_BIN_PATH')
+            'binPath' => $this->getEnv('GS_BIN_PATH')
         ]);
         $handler = new Handler($config);
         $this->assertGreaterThan(0, $handler->getPdfTotalPage($file));
@@ -155,7 +154,7 @@ class HandlerTest extends TestCase
         $fileSystem->method('isValid')->willReturn(true);
         $file = dirname(__DIR__, 2) . '/files/gs_ -test/test.pdf';
         $handler = new Handler(new Config([
-            'binPath' => EnvHelper::get('GS_BIN_PATH'),
+            'binPath' => $this->getEnv('GS_BIN_PATH'),
             'fileSystem' => $fileSystem
         ]));
         $this->assertLessThanOrEqual(0, $handler->getPdfTotalPage($file));
@@ -164,13 +163,25 @@ class HandlerTest extends TestCase
         $fileSystem->method('isFile')->willReturn(true);
         $fileSystem->method('isValid')->willReturn(true);
         $file = dirname(__DIR__, 2) . '/files/gs_- test/test.txt';
-        $handler = $this->getMockBuilder(Handler::class)
-            ->setConstructorArgs([new Config([
-                'binPath' => EnvHelper::get('GS_BIN_PATH'),
-                'fileSystem' => $fileSystem
-            ])])
-            ->setMethods(['isPdf'])
-            ->getMock();
+
+        if ($this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9)) {
+            $handler = $this->getMockBuilder(Handler::class)
+                ->setConstructorArgs([new Config([
+                    'binPath' => $this->getEnv('GS_BIN_PATH'),
+                    'fileSystem' => $fileSystem
+                ])])
+                ->setMethods(['isPdf'])
+                ->getMock();
+        } else {
+            $handler = $this->getMockBuilder(Handler::class)
+                ->setConstructorArgs([new Config([
+                    'binPath' => $this->getEnv('GS_BIN_PATH'),
+                    'fileSystem' => $fileSystem
+                ])])
+                ->onlyMethods(['isPdf'])
+                ->getMock();
+        }
+
         $handler->method('isPdf')->willReturn(false);
         $this->assertLessThanOrEqual(0, $handler->getPdfTotalPage($file));
     }

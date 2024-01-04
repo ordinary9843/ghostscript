@@ -2,7 +2,7 @@
 
 namespace Tests\Helpers;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Ordinary9843\Helpers\PathHelper;
 
 class PathHelperTest extends TestCase

@@ -2,7 +2,7 @@
 
 namespace Tests\Cores;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use ordinary9843\Cores\FileSystem;
 
 class FileSystemTest extends TestCase

@@ -2,7 +2,7 @@
 
 namespace Tests\Exceptions;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Ordinary9843\Exceptions\Exception;
 
 class ExceptionTest extends TestCase

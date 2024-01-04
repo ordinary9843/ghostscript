@@ -2,9 +2,8 @@
 
 namespace Tests;
 
+use Tests\TestCase;
 use Ordinary9843\Ghostscript;
-use PHPUnit\Framework\TestCase;
-use Ordinary9843\Helpers\EnvHelper;
 use Ordinary9843\Exceptions\Exception;
 use Ordinary9843\Constants\MessageConstant;
 
@@ -15,7 +14,7 @@ class GhostscriptTest extends TestCase
      */
     public function testConvertWithExistFileShouldSucceed(): void
     {
-        $this->assertIsString((new Ghostscript(EnvHelper::get('GS_BIN_PATH')))->convert(dirname(__DIR__, 2) . '/files/convert/test.pdf', 1.5));
+        $this->assertIsString((new Ghostscript($this->getEnv('GS_BIN_PATH')))->convert(dirname(__DIR__, 2) . '/files/convert/test.pdf', 1.5));
     }
 
     /**
@@ -23,7 +22,7 @@ class GhostscriptTest extends TestCase
      */
     public function testGuessWithExistFileShouldSucceed(): void
     {
-        $this->assertIsFloat((new Ghostscript(EnvHelper::get('GS_BIN_PATH')))->guess(dirname(__DIR__, 2) . '/files/guess/test.pdf'));
+        $this->assertIsFloat((new Ghostscript($this->getEnv('GS_BIN_PATH')))->guess(dirname(__DIR__, 2) . '/files/guess/test.pdf'));
     }
 
     /**
@@ -31,7 +30,7 @@ class GhostscriptTest extends TestCase
      */
     public function testMergeWithExistFilesShouldSucceed(): void
     {
-        $this->assertIsString((new Ghostscript(EnvHelper::get('GS_BIN_PATH')))->merge(dirname(__DIR__, 2) . '/files/merge/test.pdf', [
+        $this->assertIsString((new Ghostscript($this->getEnv('GS_BIN_PATH')))->merge(dirname(__DIR__, 2) . '/files/merge/test.pdf', [
             dirname(__DIR__, 2) . '/files/merge/part_1.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_2.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_3.pdf'
@@ -43,7 +42,7 @@ class GhostscriptTest extends TestCase
      */
     public function testSplitWithExistFilesShouldSucceed(): void
     {
-        $this->assertIsArray((new Ghostscript(EnvHelper::get('GS_BIN_PATH')))->split(dirname(__DIR__, 2) . '/files/split/test.pdf', dirname(__DIR__, 2) . '/files/split'));
+        $this->assertIsArray((new Ghostscript($this->getEnv('GS_BIN_PATH')))->split(dirname(__DIR__, 2) . '/files/split/test.pdf', dirname(__DIR__, 2) . '/files/split'));
     }
 
     /**
@@ -52,7 +51,7 @@ class GhostscriptTest extends TestCase
     public function testSetBinPathShouldEqualGetBinPath(): void
     {
         $ghostscript = new Ghostscript();
-        $binPath = EnvHelper::get('GS_BIN_PATH');
+        $binPath = $this->getEnv('GS_BIN_PATH');
         $ghostscript->setBinPath($binPath);
         $this->assertEquals($binPath, $ghostscript->getBinPath());
     }

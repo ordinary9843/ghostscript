@@ -2,10 +2,9 @@
 
 namespace Tests\Handlers;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Ordinary9843\Configs\Config;
 use Ordinary9843\Cores\FileSystem;
-use Ordinary9843\Helpers\EnvHelper;
 use Ordinary9843\Handlers\ConvertHandler;
 use Ordinary9843\Constants\MessageConstant;
 
@@ -18,7 +17,7 @@ class ConvertHandlerTest extends TestCase
     {
         $file = dirname(__DIR__, 2) . '/files/convert/test.pdf';
         $convertHandler = new ConvertHandler();
-        $convertHandler->setBinPath(EnvHelper::get('GS_BIN_PATH'));
+        $convertHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
         $convertedFile = $convertHandler->execute($file, 1.5);
         $this->assertEquals($file, $convertedFile);
         $this->assertFileExists($convertedFile);
@@ -32,7 +31,7 @@ class ConvertHandlerTest extends TestCase
     {
         $file = dirname(__DIR__, 2) . '/files/gs_ -test/中文.pdf';
         $convertHandler = new ConvertHandler();
-        $convertHandler->setBinPath(EnvHelper::get('GS_BIN_PATH'));
+        $convertHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
         $convertedFile = $convertHandler->execute($file, 1.5);
         $this->assertEquals($file, $convertedFile);
         $this->assertFileExists($convertedFile);
@@ -49,12 +48,18 @@ class ConvertHandlerTest extends TestCase
         $fileSystem->method('isValid')->willReturn(true);
         $file = dirname(__DIR__, 2) . '/files/convert/test.pdf';
         $convertHandler = new ConvertHandler(new Config([
-            'binPath' => EnvHelper::get('GS_BIN_PATH'),
+            'binPath' => $this->getEnv('GS_BIN_PATH'),
             'fileSystem' => $fileSystem
         ]));
         $convertedFile = $convertHandler->execute($file, 1.5);
         $this->assertNotEquals($file, $convertedFile);
-        $this->assertFileNotExists($convertedFile);
+
+        if ($this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9)) {
+            $this->assertFileNotExists($convertedFile);
+        } else {
+            $this->assertFileDoesNotExist($convertedFile);
+        }
+
         $this->assertTrue($convertHandler->hasMessages(MessageConstant::TYPE_ERROR));
     }
 
@@ -64,14 +69,28 @@ class ConvertHandlerTest extends TestCase
     public function testExecuteWithNotPdfShouldReturnErrorMessage(): void
     {
         $file = dirname(__DIR__, 2) . '/files/convert/test.pdf';
-        $convertHandler = $this->getMockBuilder(ConvertHandler::class)
-            ->setMethods(['isPdf', 'getConfig'])
-            ->getMock();
-        $convertHandler->method('getConfig')->willReturn(new Config(['binPath' => EnvHelper::get('GS_BIN_PATH')]));
+
+        if ($this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9)) {
+            $convertHandler = $this->getMockBuilder(ConvertHandler::class)
+                ->setMethods(['isPdf', 'getConfig'])
+                ->getMock();
+        } else {
+            $convertHandler = $this->getMockBuilder(ConvertHandler::class)
+                ->onlyMethods(['isPdf', 'getConfig'])
+                ->getMock();
+        }
+
+        $convertHandler->method('getConfig')->willReturn(new Config(['binPath' => $this->getEnv('GS_BIN_PATH')]));
         $convertHandler->method('isPdf')->willReturn(false);
         $convertedFile = $convertHandler->execute($file, 1.5);
         $this->assertNotEquals($file, $convertedFile);
-        $this->assertFileNotExists($convertedFile);
+
+        if ($this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9)) {
+            $this->assertFileNotExists($convertedFile);
+        } else {
+            $this->assertFileDoesNotExist($convertedFile);
+        }
+
         $this->assertTrue($convertHandler->hasMessages(MessageConstant::TYPE_ERROR));
     }
 
@@ -82,14 +101,20 @@ class ConvertHandlerTest extends TestCase
     {
         $file = dirname(__DIR__, 2) . '/files/convert/test.pdf';
         $convertHandler = new ConvertHandler(new Config([
-            'binPath' => EnvHelper::get('GS_BIN_PATH')
+            'binPath' => $this->getEnv('GS_BIN_PATH')
         ]));
         $convertHandler->setOptions([
             'test' => true
         ]);
         $convertedFile = $convertHandler->execute($file, 1.5);
         $this->assertNotEquals($file, $convertedFile);
-        $this->assertFileNotExists($convertedFile);
+
+        if ($this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9)) {
+            $this->assertFileNotExists($convertedFile);
+        } else {
+            $this->assertFileDoesNotExist($convertedFile);
+        }
+
         $this->assertTrue($convertHandler->hasMessages(MessageConstant::TYPE_ERROR));
     }
 }

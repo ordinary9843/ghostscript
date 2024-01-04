@@ -2,10 +2,9 @@
 
 namespace Tests\Configs;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use Ordinary9843\Configs\Config;
 use ordinary9843\Cores\FileSystem;
-use Ordinary9843\Helpers\EnvHelper;
 use Ordinary9843\Exceptions\InvalidFilePathException;
 
 class ConfigTest extends TestCase
@@ -15,7 +14,7 @@ class ConfigTest extends TestCase
      */
     public function testSetBinPathShouldEqualGetBinPath(): void
     {
-        $binPath = EnvHelper::get('GS_BIN_PATH');
+        $binPath = $this->getEnv('GS_BIN_PATH');
         $config = new Config();
         $config->setBinPath($binPath);
         $this->assertEquals($binPath, $config->getBinPath());
