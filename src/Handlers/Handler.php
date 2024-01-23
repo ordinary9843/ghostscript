@@ -9,13 +9,15 @@ use Ordinary9843\Exceptions\Exception;
 use Ordinary9843\Constants\MessageConstant;
 use Ordinary9843\Exceptions\ExecuteException;
 use Ordinary9843\Interfaces\HandlerInterface;
-use Ordinary9843\Constants\GhostscriptConstant;
 use Ordinary9843\Exceptions\InvalidFilePathException;
 use Ordinary9843\Exceptions\InvalidFileTypeException;
 
 class Handler implements HandlerInterface
 {
     use MessageTrait;
+
+    /** @var string */
+    const TMP_FILE_PREFIX = 'ghostscript_tmp_file_';
 
     /** @var Config */
     private static $config = null;
@@ -149,7 +151,7 @@ class Handler implements HandlerInterface
      */
     public function getTmpFile(string $filename = ''): string
     {
-        return $this->getTmpPath() . DIRECTORY_SEPARATOR . uniqid(GhostscriptConstant::TMP_FILE_PREFIX . $filename) . '.pdf';
+        return $this->getTmpPath() . DIRECTORY_SEPARATOR . uniqid(self::TMP_FILE_PREFIX . $filename) . '.pdf';
     }
 
     /**
@@ -169,7 +171,7 @@ class Handler implements HandlerInterface
             if ($this->getFileSystem()->isFile($path)) {
                 $pathInfo = pathinfo($path);
                 $filename = $pathInfo['filename'];
-                (preg_match('/' . GhostscriptConstant::TMP_FILE_PREFIX . '/', $filename)) && $count++;
+                (preg_match('/' . self::TMP_FILE_PREFIX . '/', $filename)) && $count++;
             }
         }
 
@@ -200,7 +202,7 @@ class Handler implements HandlerInterface
                 if ($isForceClear === true || $isExpired === true) {
                     $pathInfo = pathinfo($path);
                     $filename = $pathInfo['filename'];
-                    (preg_match('/' . GhostscriptConstant::TMP_FILE_PREFIX . '/', $filename)) && $fileSystem->delete($path);
+                    (preg_match('/' . self::TMP_FILE_PREFIX . '/', $filename)) && $fileSystem->delete($path);
                 }
             }
         }
