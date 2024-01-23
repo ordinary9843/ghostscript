@@ -5,6 +5,7 @@ namespace Ordinary9843\Handlers;
 use Ordinary9843\Helpers\PathHelper;
 use Ordinary9843\Exceptions\Exception;
 use Ordinary9843\Constants\MessageConstant;
+use Ordinary9843\Constants\ToImageConstant;
 use Ordinary9843\Exceptions\ExecuteException;
 use Ordinary9843\Interfaces\HandlerInterface;
 use Ordinary9843\Constants\GhostscriptConstant;
@@ -17,6 +18,7 @@ class ToImageHandler extends Handler implements HandlerInterface
      * 
      * @return array
      * 
+     * @throws ExecuteException
      * @throws InvalidFilePathException
      */
     public function execute(...$arguments): array
@@ -28,20 +30,20 @@ class ToImageHandler extends Handler implements HandlerInterface
         try {
             $file = PathHelper::convertPathSeparator($arguments[0] ?? '');
             $path = PathHelper::convertPathSeparator($arguments[1] ?? '');
-            $type = PathHelper::convertPathSeparator($arguments[2] ?? GhostscriptConstant::TO_IMAGE_TYPE_JPEG);
+            $type = PathHelper::convertPathSeparator($arguments[2] ?? ToImageConstant::TYPE_JPEG);
             $totalPage = $this->getPdfTotalPage($file);
             if ($totalPage < 1) {
                 throw new ExecuteException('Failed to read the total number of pages in "' . $file . '".');
             }
 
-            $outputImagePath = GhostscriptConstant::TO_IMAGE_FILENAME . $type;
+            $imageFormatPath = '/image_%d.' . $type;
             $output = shell_exec(
                 $this->optionsToCommand(
                     sprintf(
-                        GhostscriptConstant::TO_IMAGE_COMMAND,
+                        ToImageConstant::COMMAND,
                         $this->getBinPath(),
-                        GhostscriptConstant::TO_IMAGE_TYPE_JPEG,
-                        escapeshellarg($path . $outputImagePath),
+                        ToImageConstant::TYPE_JPEG,
+                        escapeshellarg($path . $imageFormatPath),
                         escapeshellarg($this->convertToTmpFile($file))
                     )
                 )
@@ -50,8 +52,8 @@ class ToImageHandler extends Handler implements HandlerInterface
                 throw new ExecuteException('Failed to convert "' . $file . '", because ' . $output . '.');
             }
 
-            $images = array_map(function ($i) use ($path, $outputImagePath) {
-                return $path . sprintf($outputImagePath, $i + 1);
+            $images = array_map(function ($i) use ($path, $imageFormatPath) {
+                return $path . sprintf($imageFormatPath, $i + 1);
             }, range(0, $totalPage - 1));
         } catch (Exception $e) {
             $this->addMessage(MessageConstant::TYPE_ERROR, $e->getMessage());

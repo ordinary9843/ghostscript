@@ -6,6 +6,7 @@ use Ordinary9843\Configs\Config;
 use Ordinary9843\Helpers\PathHelper;
 use Ordinary9843\Exceptions\Exception;
 use Ordinary9843\Handlers\GuessHandler;
+use Ordinary9843\Constants\MergeConstant;
 use Ordinary9843\Handlers\ConvertHandler;
 use Ordinary9843\Constants\MessageConstant;
 use Ordinary9843\Exceptions\ExecuteException;
@@ -32,6 +33,7 @@ class MergeHandler extends Handler implements HandlerInterface
      *
      * @return string
      *
+     * @throws ExecuteException
      * @throws InvalidFilePathException
      */
     public function execute(...$arguments): string
@@ -60,7 +62,7 @@ class MergeHandler extends Handler implements HandlerInterface
             $output = shell_exec(
                 $this->optionsToCommand(
                     sprintf(
-                        GhostscriptConstant::MERGE_COMMAND,
+                        MergeConstant::COMMAND,
                         $this->getBinPath(),
                         escapeshellarg($file),
                         implode(' ', array_map(function ($value) {

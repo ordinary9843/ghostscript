@@ -13,6 +13,8 @@ class GuessHandler extends Handler implements HandlerInterface
      * @param array ...$arguments
      * 
      * @return float
+     * 
+     * @throws ExecuteException
      */
     public function execute(...$arguments): float
     {

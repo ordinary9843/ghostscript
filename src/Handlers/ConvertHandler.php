@@ -4,10 +4,10 @@ namespace Ordinary9843\Handlers;
 
 use Ordinary9843\Helpers\PathHelper;
 use Ordinary9843\Exceptions\Exception;
+use Ordinary9843\Constants\ConvertConstant;
 use Ordinary9843\Constants\MessageConstant;
 use Ordinary9843\Exceptions\ExecuteException;
 use Ordinary9843\Interfaces\HandlerInterface;
-use Ordinary9843\Constants\GhostscriptConstant;
 use Ordinary9843\Exceptions\InvalidFilePathException;
 
 class ConvertHandler extends Handler implements HandlerInterface
@@ -17,6 +17,7 @@ class ConvertHandler extends Handler implements HandlerInterface
      * 
      * @return string
      * 
+     * @throws ExecuteException
      * @throws InvalidFilePathException
      */
     public function execute(...$arguments): string
@@ -36,7 +37,7 @@ class ConvertHandler extends Handler implements HandlerInterface
             $output = shell_exec(
                 $this->optionsToCommand(
                     sprintf(
-                        GhostscriptConstant::CONVERT_COMMAND,
+                        ConvertConstant::COMMAND,
                         $this->getBinPath(),
                         $version,
                         escapeshellarg($tmpFile),

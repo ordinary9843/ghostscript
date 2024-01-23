@@ -6,7 +6,7 @@ use Tests\TestCase;
 use Ordinary9843\Configs\Config;
 use Ordinary9843\Handlers\ToImageHandler;
 use Ordinary9843\Constants\MessageConstant;
-use Ordinary9843\Constants\GhostscriptConstant;
+use Ordinary9843\Constants\ToImageConstant;
 
 class ToImageHandlerTest extends TestCase
 {
@@ -28,7 +28,7 @@ class ToImageHandlerTest extends TestCase
     {
         $toImageHandler = new ToImageHandler();
         $toImageHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $this->assertCount(3, $toImageHandler->execute(dirname(__DIR__, 2) . '/files/to-image/test.pdf', '/tmp/mock/files'), GhostscriptConstant::TO_IMAGE_TYPE_JPEG);
+        $this->assertCount(3, $toImageHandler->execute(dirname(__DIR__, 2) . '/files/to-image/test.pdf', '/tmp/mock/files'), ToImageConstant::TYPE_JPEG);
         $this->assertFalse($toImageHandler->hasMessages(MessageConstant::TYPE_ERROR));
     }
 
@@ -39,7 +39,7 @@ class ToImageHandlerTest extends TestCase
     {
         $toImageHandler = new ToImageHandler();
         $toImageHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $this->assertCount(3, $toImageHandler->execute(dirname(__DIR__, 2) . '/files/to-image/test.pdf', '/tmp/mock/files'), GhostscriptConstant::TO_IMAGE_TYPE_PNG);
+        $this->assertCount(3, $toImageHandler->execute(dirname(__DIR__, 2) . '/files/to-image/test.pdf', '/tmp/mock/files'), ToImageConstant::TYPE_PNG);
         $this->assertFalse($toImageHandler->hasMessages(MessageConstant::TYPE_ERROR));
     }
 

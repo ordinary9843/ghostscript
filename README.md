@@ -45,6 +45,8 @@ require './vendor/autoload.php';
 
 use Ordinary9843\Ghostscript;
 use Ordinary9843\Constants\GhostscriptConstant;
+use Ordinary9843\Constants\ToImageConstant;
+use Ordinary9843\Constants\MessageConstant;
 
 $file = './files/gs_ -test/test.pdf';
 $binPath = '/usr/bin/gs';
@@ -106,7 +108,7 @@ $ghostscript->split('./files/merge/test.pdf', './files/split/parts');
  *   './files/to-image/images/image_3.pdf'
  * ]
  */
-$ghostscript->toImage('./files/to-image/test.pdf', './files/to-image/images', GhostscriptConstant::TO_IMAGE_TYPE_JPEG);
+$ghostscript->toImage('./files/to-image/test.pdf', './files/to-image/images', ToImageConstant::TYPE_JPEG);
 
 /**
  * Check if there are any messages.
