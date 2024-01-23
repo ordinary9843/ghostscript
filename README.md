@@ -5,7 +5,7 @@
 
 ## Intro
 
-Use Ghostscript to merge / split all PDF files or guess and convert PDF file version. Fix FPDI error by Ghostscript: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.
+Use Ghostscript to merge / split all PDF files or guess and convert PDF file version, and transform PDFs into images. Fix FPDI error by Ghostscript: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.
 
 ## Cores
 
@@ -44,6 +44,7 @@ Example usage:
 require './vendor/autoload.php';
 
 use Ordinary9843\Ghostscript;
+use Ordinary9843\Constants\GhostscriptConstant;
 
 $file = './files/gs_ -test/test.pdf';
 $binPath = '/usr/bin/gs';
@@ -72,7 +73,7 @@ $ghostscript->guess($file);
  *
  * Output: './files/merge/test.pdf'
  */
-$ghostscript->convert($file, 1.4);
+$ghostscript->convert($file, GhostscriptConstant::STABLE_VERSION);
 
 /**
  * Merge all PDF.
@@ -95,6 +96,17 @@ $ghostscript->merge('./files/merge/test.pdf', [
  * ]
  */
 $ghostscript->split('./files/merge/test.pdf', './files/split/parts');
+
+/**
+ * Convert PDF to images.
+ *
+ * Output: [
+ *   './files/to-image/images/image_1.pdf',
+ *   './files/to-image/images/image_2.pdf',
+ *   './files/to-image/images/image_3.pdf'
+ * ]
+ */
+$ghostscript->toImage('./files/to-image/test.pdf', './files/to-image/images', GhostscriptConstant::TO_IMAGE_TYPE_JPEG);
 
 /**
  * Check if there are any messages.

@@ -12,6 +12,7 @@ use Ordinary9843\Exceptions\InvalidMethodException;
  * @method float guess(string $file)
  * @method string merge(string $file, array $files)
  * @method array split(string $file, string $path)
+ * @method array toImage(string $file, string $path, string $type = 'jpeg')
  * @method void setBinPath(string $binPath)
  * @method string getBinPath()
  * @method void setTmpPath(string $tmpPath)
@@ -53,6 +54,7 @@ class Ghostscript
             case 'guess':
             case 'merge':
             case 'split':
+            case 'toImage':
                 return $this->execute($name, $arguments);
             case 'setBinPath':
                 return $this->handler->setBinPath(current($arguments));

@@ -5,6 +5,7 @@ vendor/
 report/
 files/split/parts/
 files/merge/test.pdf
+files/to-image/images/
 composer.lock
 coverage.xml
 phpunit.xml

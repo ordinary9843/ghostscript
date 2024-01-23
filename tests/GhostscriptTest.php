@@ -42,7 +42,15 @@ class GhostscriptTest extends TestCase
      */
     public function testSplitWithExistFilesShouldSucceed(): void
     {
-        $this->assertIsArray((new Ghostscript($this->getEnv('GS_BIN_PATH')))->split(dirname(__DIR__, 2) . '/files/split/test.pdf', dirname(__DIR__, 2) . '/files/split'));
+        $this->assertIsArray((new Ghostscript($this->getEnv('GS_BIN_PATH')))->split(dirname(__DIR__, 2) . '/files/split/test.pdf', dirname(__DIR__, 2) . '/files/split/parts'));
+    }
+
+    /**
+     * @return void
+     */
+    public function testToImageWithExistFilesShouldSucceed(): void
+    {
+        $this->assertIsArray((new Ghostscript($this->getEnv('GS_BIN_PATH')))->toImage(dirname(__DIR__, 2) . '/files/to-image/test.pdf', dirname(__DIR__, 2) . '/files/to-image/images'));
     }
 
     /**
