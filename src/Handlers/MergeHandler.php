@@ -6,7 +6,6 @@ use Ordinary9843\Configs\Config;
 use Ordinary9843\Helpers\PathHelper;
 use Ordinary9843\Exceptions\Exception;
 use Ordinary9843\Handlers\GuessHandler;
-use Ordinary9843\Constants\MergeConstant;
 use Ordinary9843\Handlers\ConvertHandler;
 use Ordinary9843\Constants\MessageConstant;
 use Ordinary9843\Exceptions\ExecuteException;
@@ -62,7 +61,7 @@ class MergeHandler extends Handler implements HandlerInterface
             $output = shell_exec(
                 $this->optionsToCommand(
                     sprintf(
-                        MergeConstant::COMMAND,
+                        '%s -sDEVICE=pdfwrite -dQUIET -dNOPAUSE -dBATCH -sOUTPUTFILE=%s %s',
                         $this->getBinPath(),
                         escapeshellarg($file),
                         implode(' ', array_map(function ($value) {

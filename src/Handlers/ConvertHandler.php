@@ -4,7 +4,6 @@ namespace Ordinary9843\Handlers;
 
 use Ordinary9843\Helpers\PathHelper;
 use Ordinary9843\Exceptions\Exception;
-use Ordinary9843\Constants\ConvertConstant;
 use Ordinary9843\Constants\MessageConstant;
 use Ordinary9843\Exceptions\ExecuteException;
 use Ordinary9843\Interfaces\HandlerInterface;
@@ -37,7 +36,7 @@ class ConvertHandler extends Handler implements HandlerInterface
             $output = shell_exec(
                 $this->optionsToCommand(
                     sprintf(
-                        ConvertConstant::COMMAND,
+                        '%s -sDEVICE=pdfwrite -dQUIET -dNOPAUSE -dBATCH -dCompatibilityLevel=%s -sOutputFile=%s %s',
                         $this->getBinPath(),
                         $version,
                         escapeshellarg($tmpFile),

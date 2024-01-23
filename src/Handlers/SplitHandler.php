@@ -4,7 +4,6 @@ namespace Ordinary9843\Handlers;
 
 use Ordinary9843\Helpers\PathHelper;
 use Ordinary9843\Exceptions\Exception;
-use Ordinary9843\Constants\SplitConstant;
 use Ordinary9843\Constants\MessageConstant;
 use Ordinary9843\Exceptions\ExecuteException;
 use Ordinary9843\Interfaces\HandlerInterface;
@@ -39,7 +38,7 @@ class SplitHandler extends Handler implements HandlerInterface
             $output = shell_exec(
                 $this->optionsToCommand(
                     sprintf(
-                        SplitConstant::COMMAND,
+                        '%s -sDEVICE=pdfwrite -dQUIET -dNOPAUSE -dBATCH -dFirstPage=%d -dLastPage=%d -sOUTPUTFILE=%s %s',
                         $this->getBinPath(),
                         1,
                         $totalPage,

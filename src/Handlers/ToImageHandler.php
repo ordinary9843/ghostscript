@@ -40,7 +40,7 @@ class ToImageHandler extends Handler implements HandlerInterface
             $output = shell_exec(
                 $this->optionsToCommand(
                     sprintf(
-                        ToImageConstant::COMMAND,
+                        '%s -dQUIET -dNOPAUSE -dBATCH -sDEVICE=%s -r300 -sOutputFile=%s %s',
                         $this->getBinPath(),
                         ToImageConstant::TYPE_JPEG,
                         escapeshellarg($path . $imageFormatPath),

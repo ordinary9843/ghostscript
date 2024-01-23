@@ -242,7 +242,7 @@ class Handler implements HandlerInterface
 
             $output = shell_exec(
                 sprintf(
-                    GhostscriptConstant::TOTAL_PAGE_COMMAND,
+                    '%s -dQUIET -dNODISPLAY -dNOSAFER -c "(%s) (r) file runpdfbegin pdfpagecount = quit"',
                     $this->getBinPath(),
                     $file
                 )
