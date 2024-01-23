@@ -5,7 +5,7 @@
 
 ## Intro
 
-Use Ghostscript to merge / split all PDF files or guess and convert PDF file version, and transform PDFs into images. Fix FPDI error by Ghostscript: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.
+Use Ghostscript to merge / split all PDF files or guess and convert PDF file version, and transform PDF into images. Fix FPDI error by Ghostscript: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.
 
 ## Cores
 
