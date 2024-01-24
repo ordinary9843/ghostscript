@@ -230,6 +230,8 @@ class Handler implements HandlerInterface
      * @param string $file
      *
      * @return int
+     * 
+     * @throws InvalidFilePathException
      */
     public function getPdfTotalPage(string $file): int
     {
