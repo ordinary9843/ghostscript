@@ -3,6 +3,8 @@
 [![build](https://github.com/ordinary9843/ghostscript/actions/workflows/build.yml/badge.svg)](https://github.com/ordinary9843/ghostscript/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/ordinary9843/ghostscript/branch/master/graph/badge.svg?token=DMXRZFN55V)](https://codecov.io/gh/ordinary9843/ghostscript)
 
+### If there are any features you desire, please open an issue, and I will do our best to meet your requirements!
+
 ## Intro
 
 Use Ghostscript to merge / split all PDF files or guess and convert PDF file version, and transform PDF into images. Fix FPDI error by Ghostscript: This document PDF probably uses a compression technique which is not supported by the free parser shipped with FPDI.
