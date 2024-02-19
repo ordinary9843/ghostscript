@@ -36,6 +36,7 @@ class ToImageHandler extends Handler implements HandlerInterface
                 throw new ExecuteException('Failed to read the total number of pages in "' . $file . '".');
             }
 
+            (!$this->getFileSystem()->isDir($path)) && mkdir($path, 0755);
             $imageFormatPath = '/image_%d.' . $type;
             $output = shell_exec(
                 $this->optionsToCommand(
