@@ -99,7 +99,7 @@ $ghostscript->merge('./files/merge/test.pdf', [
  *   './files/split/parts/part_3.pdf'
  * ]
  */
-$ghostscript->split('./files/merge/test.pdf', './files/split/parts');
+$ghostscript->split('./files/split/test.pdf', './files/split/parts');
 
 /**
  * Convert PDF to images.
