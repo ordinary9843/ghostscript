@@ -6,6 +6,8 @@
     </testsuite>
   </testsuites>
   <coverage>
-    <include directory="./src" suffix=".php"/>
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
   </coverage>
 </phpunit>
