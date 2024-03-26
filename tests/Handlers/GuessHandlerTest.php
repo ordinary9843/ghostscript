@@ -2,35 +2,48 @@
 
 namespace Tests\Handlers;
 
-use Tests\TestCase;
+use ReflectionClass;
+use Tests\BaseTestCase;
 use Ordinary9843\Handlers\GuessHandler;
-use Ordinary9843\Constants\MessageConstant;
+use Ordinary9843\Exceptions\HandlerException;
 
-class GuessHandlerTest extends TestCase
+class GuessHandlerTest extends BaseTestCase
 {
     /**
      * @return void
      */
-    public function testExecuteWithExistFileShouldSucceed(): void
+    public function testArgumentsMappingWhenProvidedInputs()
     {
-        $file = dirname(__DIR__, 2) . '/files/guess/test.pdf';
-        $guessHandler = new GuessHandler();
-        $guessHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $this->assertEquals(1.5, $guessHandler->execute($file));
-        $this->assertFileExists($file);
-        $this->assertFalse($guessHandler->hasMessages(MessageConstant::TYPE_ERROR));
+        $handler = new GuessHandler();
+        $reflection = new ReflectionClass($handler);
+        $property = $reflection->getProperty('argumentsMapping');
+        $property->setAccessible(true);
+        $argumentsMapping = $property->getValue($handler);
+        $this->assertCount(1, $argumentsMapping);
+        $this->assertContains('file', $argumentsMapping);
     }
 
     /**
      * @return void
      */
-    public function testExecuteWithNotExistFileShouldReturnErrorMessage(): void
+    public function testExecuteShouldSucceed(): void
     {
+        $file = dirname(__DIR__, 2) . '/files/guess/test.pdf';
+        $handler = new GuessHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $this->assertEquals(1.5, $handler->execute($file));
+        $this->assertFileExists($file);
+    }
+
+    /**
+     * @return void
+     */
+    public function testExecuteShouldThrowInvalidException(): void
+    {
+        $this->expectException(HandlerException::class);
         $file = dirname(__DIR__, 2) . '/files/guess/part_4.pdf';
-        $guessHandler = new GuessHandler();
-        $guessHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $this->assertEquals(0.0, $guessHandler->execute($file));
-        $this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9) ? $this->assertFileNotExists($file) : $this->assertFileDoesNotExist($file);
-        $this->assertTrue($guessHandler->hasMessages(MessageConstant::TYPE_ERROR));
+        $handler = new GuessHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $handler->execute($file);
     }
 }

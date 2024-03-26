@@ -2,29 +2,61 @@
 
 namespace Ordinary9843\Configs;
 
-use Ordinary9843\Cores\FileSystem;
 use Ordinary9843\Helpers\PathHelper;
-use Ordinary9843\Exceptions\InvalidException;
+use Ordinary9843\Exceptions\ConfigException;
 
 class Config
 {
-    /** @var string */
-    private $binPath = '';
+    /** @var Config */
+    private static $instance = null;
 
     /** @var string */
-    private $tmpPath = '';
+    protected $binPath = 'gs';
 
-    /** @var FileSystem */
-    private static $fileSystem = null;
+    /** @var string */
+    protected $tmpPath = '/tmp';
 
     /**
-     * @param array $config
+     * @throws ConfigException
      */
-    public function __construct(array $config = [])
+    public function __clone()
     {
-        $this->setBinPath((isset($config['binPath']) && $config['binPath']) ? $config['binPath'] : 'gs');
-        $this->setTmpPath((isset($config['tmpPath']) && $config['tmpPath']) ? $config['tmpPath'] : sys_get_temp_dir());
-        $this->setFileSystem((isset($config['fileSystem']) && $config['fileSystem']) ? $config['fileSystem'] : new FileSystem());
+        throw new ConfigException('Cannot clone a singleton instance.', ConfigException::CODE_CLONE);
+    }
+
+    /**
+     * @throws ConfigException
+     */
+    public function __wakeup()
+    {
+        throw new ConfigException('Cannot unserialize a singleton instance.', ConfigException::CODE_WAKEUP);
+    }
+
+    /**
+     * @param array $arguments
+     * 
+     * @return void
+     */
+    public static function initialize(array $arguments = []): void
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+
+        (isset($arguments['binPath'])) && self::$instance->setBinPath($arguments['binPath']);
+        (isset($arguments['tmpPath'])) && self::$instance->setTmpPath($arguments['tmpPath']);
+    }
+
+    /**
+     * @param array $arguments
+     * 
+     * @return Config
+     */
+    public static function getInstance(array $arguments = []): Config
+    {
+        self::initialize($arguments);
+
+        return self::$instance;
     }
 
     /**
@@ -61,38 +93,5 @@ class Config
     public function getTmpPath(): string
     {
         return $this->tmpPath;
-    }
-
-    /**
-     * @param FileSystem $fileSystem
-     * 
-     * @return void
-     */
-    public function setFileSystem(FileSystem $fileSystem): void
-    {
-        self::$fileSystem = $fileSystem;
-    }
-
-    /**
-     * @return FileSystem
-     */
-    public function getFileSystem(): FileSystem
-    {
-        return self::$fileSystem;
-    }
-
-    /**
-     * @return void
-     * 
-     * @throws InvalidException
-     */
-    public function validateBinPath(): void
-    {
-        $binPath = $this->getBinPath();
-        if (!$binPath || !self::$fileSystem->isValid($binPath) || !preg_match('/\d+.\d+/', shell_exec($binPath . ' --version'))) {
-            throw new InvalidException('The Ghostscript binary path is not set.', InvalidException::CODE_FILEPATH, [
-                'binPath' => $binPath
-            ]);
-        }
     }
 }

@@ -3,118 +3,60 @@
 namespace Ordinary9843\Handlers;
 
 use Ordinary9843\Configs\Config;
-use Ordinary9843\Cores\FileSystem;
-use Ordinary9843\Traits\MessageTrait;
+use Ordinary9843\Traits\ConfigTrait;
+use Ordinary9843\Traits\FileSystemTrait;
 use Ordinary9843\Exceptions\BaseException;
-use Ordinary9843\Constants\MessageConstant;
 use Ordinary9843\Exceptions\HandlerException;
 use Ordinary9843\Exceptions\InvalidException;
 use Ordinary9843\Interfaces\HandlerInterface;
 
-class Handler implements HandlerInterface
+class BaseHandler implements HandlerInterface
 {
-    use MessageTrait;
+    use ConfigTrait, FileSystemTrait;
 
     /** @var string */
     const TMP_FILE_PREFIX = 'ghostscript_tmp_file_';
 
     /** @var Config */
-    private static $config = null;
+    protected $config = null;
 
     /** @var array */
-    private $options = [];
+    protected $argumentsMapping = [];
 
     /** @var array */
-    private $tmpFiles = [];
+    protected $options = [];
 
-    /**
-     * @param Config $config
-     */
-    public function __construct(Config $config = null)
+    /** @var array */
+    protected $tmpFiles = [];
+
+    public function __construct()
     {
-        self::$config = ($config !== null) ? $config : new Config();
+        $this->config = Config::getInstance();
     }
 
     /**
-     * @param Config $config
-     *
-     * @return void
-     */
-    public function setConfig(Config $config): void
-    {
-        self::$config = $config;
-    }
-
-    /**
-     * @return Config
-     */
-    public function getConfig(): Config
-    {
-        return self::$config;
-    }
-
-    /**
-     * @param FileSystem $fileSystem
+     * @param array $arguments
      * 
      * @return void
      */
-    public function setFileSystem(FileSystem $fileSystem): void
+    protected function mapArguments(array &$arguments): void
     {
-        $this->getConfig()->setFileSystem($fileSystem);
+        if (!empty($this->argumentsMapping)) {
+            $arguments += array_fill(0, count($this->argumentsMapping), null);
+            $arguments = array_combine($this->argumentsMapping, $arguments);
+        }
     }
 
     /**
-     * @return FileSystem
-     */
-    public function getFileSystem(): FileSystem
-    {
-        return $this->getConfig()->getFileSystem();
-    }
-
-    /**
-     * @param string $binPath
+     * @param array ...$arguments
      * 
-     * @return void
-     */
-    public function setBinPath(string $binPath): void
-    {
-        $this->getConfig()->setBinPath($binPath);
-    }
-
-    /**
-     * @return string
-     */
-    public function getBinPath(): string
-    {
-        return $this->getConfig()->getBinPath();
-    }
-
-    /**
-     * @param string $tmpPath
+     * @return mixed
      * 
-     * @return void
+     * @throws HandlerException
      */
-    public function setTmpPath(string $tmpPath): void
+    public function execute(...$arguments)
     {
-        $this->getConfig()->setTmpPath($tmpPath);
-    }
-
-    /**
-     * @return string
-     */
-    public function getTmpPath(): string
-    {
-        return $this->getConfig()->getTmpPath();
-    }
-
-    /**
-     * @return void
-     * 
-     * @throws InvalidException
-     */
-    public function validateBinPath(): void
-    {
-        $this->getConfig()->validateBinPath();
+        throw new HandlerException('The method has not implemented yet.', HandlerException::CODE_EXECUTE);
     }
 
     /**
@@ -167,7 +109,7 @@ class Handler implements HandlerInterface
             }
 
             $path = $tmpPath . DIRECTORY_SEPARATOR . $file;
-            if ($this->getFileSystem()->isFile($path)) {
+            if ($this->isFile($path)) {
                 $pathInfo = pathinfo($path);
                 $filename = $pathInfo['filename'];
                 (preg_match('/' . self::TMP_FILE_PREFIX . '/', $filename)) && $count++;
@@ -186,7 +128,6 @@ class Handler implements HandlerInterface
     public function clearTmpFiles(bool $isForceClear = false, int $days = 7): void
     {
         $deleteSeconds = $days * 86400;
-        $fileSystem = $this->getFileSystem();
         $tmpPath = $this->getTmpPath();
         $files = scandir($tmpPath);
         foreach ($files as $file) {
@@ -195,19 +136,19 @@ class Handler implements HandlerInterface
             }
 
             $path = $tmpPath . DIRECTORY_SEPARATOR . $file;
-            if ($fileSystem->isFile($path)) {
+            if ($this->isFile($path)) {
                 $createdAt = filemtime($path);
                 $isExpired = time() - $createdAt > $deleteSeconds;
                 if ($isForceClear === true || $isExpired === true) {
                     $pathInfo = pathinfo($path);
                     $filename = $pathInfo['filename'];
-                    (preg_match('/' . self::TMP_FILE_PREFIX . '/', $filename)) && $fileSystem->delete($path);
+                    (preg_match('/' . self::TMP_FILE_PREFIX . '/', $filename)) && $this->delete($path);
                 }
             }
         }
 
         foreach ($this->getTmpFiles() as $file) {
-            $fileSystem->delete($file);
+            $this->delete($file);
         }
     }
 
@@ -225,6 +166,7 @@ class Handler implements HandlerInterface
         }, array_keys($options), $options)) : $command;
     }
 
+    // TODO: Move to Handler.
     /**
      * @param string $file
      *
@@ -236,8 +178,7 @@ class Handler implements HandlerInterface
     {
         try {
             $this->validateBinPath();
-
-            if (!$this->getFileSystem()->isFile($file)) {
+            if (!$this->isFile($file)) {
                 throw new InvalidException('"' . $file . '" is not exist.', InvalidException::CODE_FILEPATH);
             } elseif (!$this->isPdf($file)) {
                 throw new InvalidException('"' . $file . '" is not PDF.', InvalidException::CODE_FILE_TYPE);
@@ -252,10 +193,10 @@ class Handler implements HandlerInterface
             );
 
             return ($output) ? (int)$output : 0;
-        } catch (BaseException $e) {
-            $this->addMessage(MessageConstant::TYPE_ERROR, $e->getMessage());
-
-            return 0;
+        } catch (BaseException $exception) {
+            throw new HandlerException($exception->getMessage(), HandlerException::CODE_EXECUTE, [
+                'file' => $file
+            ], $exception);
         }
     }
 
@@ -298,14 +239,17 @@ class Handler implements HandlerInterface
     }
 
     /**
-     * @param array ...$arguments
+     * @return void
      * 
-     * @return mixed
-     * 
-     * @throws HandlerException
+     * @throws InvalidException
      */
-    public function execute(...$arguments)
+    public function validateBinPath(): void
     {
-        throw new HandlerException('The method has not implemented yet.', HandlerException::CODE_EXECUTE);
+        $binPath = $this->getBinPath();
+        if (!$binPath || !$this->isValid($binPath) || !preg_match('/\d+.\d+/', shell_exec($binPath . ' --version'))) {
+            throw new InvalidException('The Ghostscript binary path is not set.', InvalidException::CODE_FILEPATH, [
+                'binPath' => $binPath
+            ]);
+        }
     }
 }

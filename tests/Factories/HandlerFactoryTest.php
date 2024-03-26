@@ -3,8 +3,12 @@
 namespace Tests\Factories;
 
 use Tests\BaseTestCase;
-use Ordinary9843\Configs\Config;
-use Ordinary9843\Handlers\Handler;
+use Ordinary9843\Handlers\BaseHandler;
+use Ordinary9843\Handlers\GuessHandler;
+use Ordinary9843\Handlers\MergeHandler;
+use Ordinary9843\Handlers\SplitHandler;
+use Ordinary9843\Handlers\ConvertHandler;
+use Ordinary9843\Handlers\ToImageHandler;
 use Ordinary9843\Factories\HandlerFactory;
 use Ordinary9843\Exceptions\NotFoundException;
 
@@ -13,33 +17,63 @@ class HandlerFactoryTest extends BaseTestCase
     /**
      * @return void
      */
-    public function testCreateHandlerShouldSucceed(): void
+    public function testCreateBaseHandlerShouldSucceed(): void
     {
-        $handler = HandlerFactory::create('', new Config([
-            'binPath' => 'test_bin_path_1',
-            'tmpPath' => 'test_tmp_path_1'
-        ]), 'arg1', 'arg2');
-        $this->assertInstanceOf(Handler::class, $handler);
-
-        $newHandler = HandlerFactory::create('', new Config([
-            'binPath' => 'test_bin_path_2',
-            'tmpPath' => 'test_tmp_path_2'
-        ]), 'arg1', 'arg2');
-        $this->assertInstanceOf(Handler::class, $newHandler);
-        $this->assertEquals($handler, $newHandler);
-        $this->assertEquals($handler->getBinPath(), $newHandler->getBinPath());
-        $this->assertEquals($handler->getTmpPath(), $newHandler->getTmpPath());
+        $handler = (new HandlerFactory)->create('base');
+        $this->assertInstanceOf(BaseHandler::class, $handler);
     }
 
     /**
      * @return void
      */
-    public function testCreateWithInvalidHandlerTypeShouldThrowsException(): void
+    public function testCreateConvertHandlerShouldSucceed(): void
+    {
+        $handler = (new HandlerFactory)->create('convert');
+        $this->assertInstanceOf(ConvertHandler::class, $handler);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCreateGuessHandlerShouldSucceed(): void
+    {
+        $handler = (new HandlerFactory)->create('guess');
+        $this->assertInstanceOf(GuessHandler::class, $handler);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCreateMergeHandlerShouldSucceed(): void
+    {
+        $handler = (new HandlerFactory)->create('merge');
+        $this->assertInstanceOf(MergeHandler::class, $handler);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCreateSplitHandlerShouldSucceed(): void
+    {
+        $handler = (new HandlerFactory)->create('split');
+        $this->assertInstanceOf(SplitHandler::class, $handler);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCreateToImageHandlerShouldSucceed(): void
+    {
+        $handler = (new HandlerFactory)->create('toImage');
+        $this->assertInstanceOf(ToImageHandler::class, $handler);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCreateBaseHandlerShouldThrowNotFoundException(): void
     {
         $this->expectException(NotFoundException::class);
-        HandlerFactory::create('notFound', new Config([
-            'binPath' => 'test_bin_path_1',
-            'tmpPath' => 'test_tmp_path_1'
-        ]), 'arg1', 'arg2');
+        (new HandlerFactory)->create('');
     }
 }

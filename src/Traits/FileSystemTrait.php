@@ -1,8 +1,8 @@
 <?php
 
-namespace Ordinary9843\Cores;
+namespace Ordinary9843\Traits;
 
-class FileSystem
+trait FileSystemTrait
 {
     /**
      * @param string $path

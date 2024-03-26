@@ -4,14 +4,16 @@ namespace Ordinary9843\Handlers;
 
 use Ordinary9843\Helpers\PathHelper;
 use Ordinary9843\Exceptions\BaseException;
-use Ordinary9843\Constants\MessageConstant;
 use Ordinary9843\Exceptions\HandlerException;
 use Ordinary9843\Exceptions\InvalidException;
 use Ordinary9843\Interfaces\HandlerInterface;
 use Ordinary9843\Exceptions\NotFoundException;
 
-class ConvertHandler extends Handler implements HandlerInterface
+class ConvertHandler extends BaseHandler implements HandlerInterface
 {
+    /** @var array */
+    protected $argumentsMapping = ['file', 'version'];
+
     /**
      * @param array ...$arguments
      * 
@@ -23,11 +25,12 @@ class ConvertHandler extends Handler implements HandlerInterface
     public function execute(...$arguments): string
     {
         $this->validateBinPath();
+        $this->mapArguments($arguments);
 
         try {
-            $file = PathHelper::convertPathSeparator($arguments[0] ?? '');
-            $version = $arguments[1] ?? 0;
-            if (!$this->getFileSystem()->isFile($file)) {
+            $file = PathHelper::convertPathSeparator($arguments['file']);
+            $version = $arguments['version'];
+            if (!$this->isFile($file)) {
                 throw new NotFoundException('"' . $file . '" is not exist.', NotFoundException::CODE_FILE);
             } elseif (!$this->isPdf($file)) {
                 throw new InvalidException('"' . $file . '" is not PDF.', InvalidException::CODE_FILE_TYPE);
@@ -50,14 +53,14 @@ class ConvertHandler extends Handler implements HandlerInterface
             }
 
             @copy($tmpFile, $file);
-        } catch (BaseException $e) {
-            $this->addMessage(MessageConstant::TYPE_ERROR, $e->getMessage());
 
-            $file = '';
+            return $file;
+        } catch (BaseException $exception) {
+            throw new HandlerException($exception->getMessage(), HandlerException::CODE_EXECUTE, [
+                'arguments' => $arguments
+            ], $exception);
         } finally {
             $this->clearTmpFiles();
         }
-
-        return $file;
     }
 }

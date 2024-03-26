@@ -2,7 +2,7 @@
 
 namespace Ordinary9843\Interfaces;
 
-interface HandlerInterface
+interface HandlerInterface extends BaseInterface
 {
     /**
      * @param array ...$options
