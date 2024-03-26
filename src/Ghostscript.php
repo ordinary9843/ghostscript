@@ -5,7 +5,7 @@ namespace Ordinary9843;
 use Ordinary9843\Configs\Config;
 use Ordinary9843\Handlers\Handler;
 use Ordinary9843\Factories\HandlerFactory;
-use Ordinary9843\Exceptions\InvalidMethodException;
+use Ordinary9843\Exceptions\InvalidException;
 
 /**
  * @method string convert(string $file, float $version)
@@ -45,7 +45,7 @@ class Ghostscript
      * 
      * @return mixed
      * 
-     * @throws InvalidMethodException
+     * @throws InvalidException
      */
     public function __call(string $name, array $arguments)
     {
@@ -73,7 +73,8 @@ class Ghostscript
             case 'hasMessages':
                 return $this->handler->hasMessages(current($arguments));
             default:
-                throw new InvalidMethodException('Invalid method: "' . $name . '".', 0, null, [
+                throw new InvalidException('Invalid method: "' . $name . '".', InvalidException::CODE_METHOD, [
+                    'name' => $name,
                     'arguments' => $arguments
                 ]);
         }

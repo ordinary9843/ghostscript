@@ -2,12 +2,12 @@
 
 namespace Tests\Configs;
 
-use Tests\TestCase;
+use Tests\BaseTestCase;
 use Ordinary9843\Configs\Config;
 use ordinary9843\Cores\FileSystem;
-use Ordinary9843\Exceptions\InvalidFilePathException;
+use Ordinary9843\Exceptions\InvalidException;
 
-class ConfigTest extends TestCase
+class ConfigTest extends BaseTestCase
 {
     /**
      * @return void
@@ -54,7 +54,8 @@ class ConfigTest extends TestCase
         $config = new Config([
             'fileSystem' => $fileSystem
         ]);
-        $this->expectException(InvalidFilePathException::class);
+        // TODO: Expect exception code
+        $this->expectException(InvalidException::class);
         $this->assertNull($config->validateBinPath());
     }
 }

@@ -2,14 +2,14 @@
 
 namespace Tests\Handlers;
 
-use Tests\TestCase;
+use Tests\BaseTestCase;
 use Ordinary9843\Configs\Config;
 use Ordinary9843\Cores\FileSystem;
 use Ordinary9843\Handlers\Handler;
-use Ordinary9843\Exceptions\Exception;
-use Ordinary9843\Exceptions\InvalidFilePathException;
+use Ordinary9843\Exceptions\BaseException;
+use Ordinary9843\Exceptions\InvalidException;
 
-class HandlerTest extends TestCase
+class HandlerTest extends BaseTestCase
 {
     /**
      * @return void
@@ -79,7 +79,7 @@ class HandlerTest extends TestCase
         $fileSystem->method('isValid')->willReturn(false);
         $handler = new Handler();
         $handler->setFileSystem($fileSystem);
-        $this->expectException(InvalidFilePathException::class);
+        $this->expectException(InvalidException::class);
         $this->assertNull($handler->validateBinPath());
     }
 
@@ -216,7 +216,7 @@ class HandlerTest extends TestCase
     public function testExecuteShouldThrowException(): void
     {
         $handler = new Handler();
-        $this->expectException(Exception::class);
+        $this->expectException(BaseException::class);
         $this->assertNull($handler->execute());
     }
 }

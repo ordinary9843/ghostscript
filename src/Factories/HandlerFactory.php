@@ -4,7 +4,7 @@ namespace Ordinary9843\Factories;
 
 use Ordinary9843\Configs\Config;
 use Ordinary9843\Handlers\Handler;
-use Ordinary9843\Exceptions\ClassNotFoundException;
+use Ordinary9843\Exceptions\NotFoundException;
 
 class HandlerFactory
 {
@@ -17,14 +17,14 @@ class HandlerFactory
      * 
      * @return Handler
      * 
-     * @throws ClassNotFoundException
+     * @throws NotFoundException
      */
     public static function create(string $handlerType, Config $config): Handler
     {
         $class = 'Ordinary9843\\Handlers\\' . ucfirst($handlerType) . 'Handler';
         if (!isset(self::$handlers[$class])) {
             if (!class_exists($class)) {
-                throw new ClassNotFoundException('Handler class "' . $class . '" does not exist.');
+                throw new NotFoundException('Handler class "' . $class . '" does not exist.', NotFoundException::CODE_CLASS);
             }
             self::$handlers[$class] = new $class($config);
         } else {

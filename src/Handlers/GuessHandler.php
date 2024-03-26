@@ -2,9 +2,10 @@
 
 namespace Ordinary9843\Handlers;
 
-use Ordinary9843\Exceptions\Exception;
+use Ordinary9843\Exceptions\BaseException;
 use Ordinary9843\Constants\MessageConstant;
-use Ordinary9843\Exceptions\ExecuteException;
+use Ordinary9843\Exceptions\HandlerException;
+use Ordinary9843\Exceptions\InvalidException;
 use Ordinary9843\Interfaces\HandlerInterface;
 
 class GuessHandler extends Handler implements HandlerInterface
@@ -14,14 +15,14 @@ class GuessHandler extends Handler implements HandlerInterface
      * 
      * @return float
      * 
-     * @throws ExecuteException
+     * @throws HandlerException
      */
     public function execute(...$arguments): float
     {
         try {
             $file = $arguments[0] ?? '';
             if (!$this->getFileSystem()->isFile($file)) {
-                throw new ExecuteException('Failed to convert, "' . $file . '" is not exist.');
+                throw new InvalidException('Failed to convert, "' . $file . '" is not exist.', InvalidException::CODE_FILE_TYPE);
             }
 
             $fo = @fopen($file, 'rb');
@@ -30,7 +31,7 @@ class GuessHandler extends Handler implements HandlerInterface
             fclose($fo);
 
             return (float)($match[1] ?? 0);
-        } catch (Exception $e) {
+        } catch (BaseException $e) {
             $this->addMessage(MessageConstant::TYPE_ERROR, $e->getMessage());
 
             return 0;

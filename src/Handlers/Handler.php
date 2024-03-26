@@ -5,12 +5,11 @@ namespace Ordinary9843\Handlers;
 use Ordinary9843\Configs\Config;
 use Ordinary9843\Cores\FileSystem;
 use Ordinary9843\Traits\MessageTrait;
-use Ordinary9843\Exceptions\Exception;
+use Ordinary9843\Exceptions\BaseException;
 use Ordinary9843\Constants\MessageConstant;
-use Ordinary9843\Exceptions\ExecuteException;
+use Ordinary9843\Exceptions\HandlerException;
+use Ordinary9843\Exceptions\InvalidException;
 use Ordinary9843\Interfaces\HandlerInterface;
-use Ordinary9843\Exceptions\InvalidFilePathException;
-use Ordinary9843\Exceptions\InvalidFileTypeException;
 
 class Handler implements HandlerInterface
 {
@@ -111,7 +110,7 @@ class Handler implements HandlerInterface
     /**
      * @return void
      * 
-     * @throws InvalidFilePathException
+     * @throws InvalidException
      */
     public function validateBinPath(): void
     {
@@ -231,7 +230,7 @@ class Handler implements HandlerInterface
      *
      * @return int
      * 
-     * @throws InvalidFilePathException
+     * @throws InvalidException
      */
     public function getPdfTotalPage(string $file): int
     {
@@ -239,9 +238,9 @@ class Handler implements HandlerInterface
             $this->validateBinPath();
 
             if (!$this->getFileSystem()->isFile($file)) {
-                throw new InvalidFilePathException('"' . $file . '" is not exist.');
+                throw new InvalidException('"' . $file . '" is not exist.', InvalidException::CODE_FILEPATH);
             } elseif (!$this->isPdf($file)) {
-                throw new InvalidFileTypeException('"' . $file . '" is not PDF.');
+                throw new InvalidException('"' . $file . '" is not PDF.', InvalidException::CODE_FILE_TYPE);
             }
 
             $output = shell_exec(
@@ -253,7 +252,7 @@ class Handler implements HandlerInterface
             );
 
             return ($output) ? (int)$output : 0;
-        } catch (Exception $e) {
+        } catch (BaseException $e) {
             $this->addMessage(MessageConstant::TYPE_ERROR, $e->getMessage());
 
             return 0;
@@ -303,10 +302,10 @@ class Handler implements HandlerInterface
      * 
      * @return mixed
      * 
-     * @throws ExecuteException
+     * @throws HandlerException
      */
     public function execute(...$arguments)
     {
-        throw new ExecuteException('The method has not implemented yet.');
+        throw new HandlerException('The method has not implemented yet.', HandlerException::CODE_EXECUTE);
     }
 }

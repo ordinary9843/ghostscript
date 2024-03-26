@@ -3,11 +3,12 @@
 namespace Ordinary9843\Handlers;
 
 use Ordinary9843\Helpers\PathHelper;
-use Ordinary9843\Exceptions\Exception;
+use Ordinary9843\Exceptions\BaseException;
 use Ordinary9843\Constants\MessageConstant;
-use Ordinary9843\Exceptions\ExecuteException;
+use Ordinary9843\Exceptions\HandlerException;
+use Ordinary9843\Exceptions\InvalidException;
 use Ordinary9843\Interfaces\HandlerInterface;
-use Ordinary9843\Exceptions\InvalidFilePathException;
+use Ordinary9843\Exceptions\NotFoundException;
 
 class ConvertHandler extends Handler implements HandlerInterface
 {
@@ -16,8 +17,8 @@ class ConvertHandler extends Handler implements HandlerInterface
      * 
      * @return string
      * 
-     * @throws ExecuteException
-     * @throws InvalidFilePathException
+     * @throws HandlerException
+     * @throws InvalidException
      */
     public function execute(...$arguments): string
     {
@@ -27,9 +28,9 @@ class ConvertHandler extends Handler implements HandlerInterface
             $file = PathHelper::convertPathSeparator($arguments[0] ?? '');
             $version = $arguments[1] ?? 0;
             if (!$this->getFileSystem()->isFile($file)) {
-                throw new ExecuteException('"' . $file . '" is not exist.');
+                throw new NotFoundException('"' . $file . '" is not exist.', NotFoundException::CODE_FILE);
             } elseif (!$this->isPdf($file)) {
-                throw new ExecuteException('"' . $file . '" is not PDF.');
+                throw new InvalidException('"' . $file . '" is not PDF.', InvalidException::CODE_FILE_TYPE);
             }
 
             $tmpFile = $this->getTmpFile();
@@ -45,11 +46,11 @@ class ConvertHandler extends Handler implements HandlerInterface
                 )
             );
             if ($output) {
-                throw new ExecuteException('Failed to convert "' . $file . '", because ' . $output . '.');
+                throw new HandlerException('Failed to convert "' . $file . '", because ' . $output . '.', HandlerException::CODE_EXECUTE);
             }
 
             @copy($tmpFile, $file);
-        } catch (Exception $e) {
+        } catch (BaseException $e) {
             $this->addMessage(MessageConstant::TYPE_ERROR, $e->getMessage());
 
             $file = '';

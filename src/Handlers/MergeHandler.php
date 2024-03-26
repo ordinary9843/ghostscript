@@ -4,14 +4,14 @@ namespace Ordinary9843\Handlers;
 
 use Ordinary9843\Configs\Config;
 use Ordinary9843\Helpers\PathHelper;
-use Ordinary9843\Exceptions\Exception;
 use Ordinary9843\Handlers\GuessHandler;
 use Ordinary9843\Handlers\ConvertHandler;
+use Ordinary9843\Exceptions\BaseException;
 use Ordinary9843\Constants\MessageConstant;
-use Ordinary9843\Exceptions\ExecuteException;
+use Ordinary9843\Exceptions\HandlerException;
+use Ordinary9843\Exceptions\InvalidException;
 use Ordinary9843\Interfaces\HandlerInterface;
 use Ordinary9843\Constants\GhostscriptConstant;
-use Ordinary9843\Exceptions\InvalidFilePathException;
 
 class MergeHandler extends Handler implements HandlerInterface
 {
@@ -32,8 +32,8 @@ class MergeHandler extends Handler implements HandlerInterface
      *
      * @return string
      *
-     * @throws ExecuteException
-     * @throws InvalidFilePathException
+     * @throws HandlerException
+     * @throws InvalidException
      */
     public function execute(...$arguments): string
     {
@@ -71,9 +71,9 @@ class MergeHandler extends Handler implements HandlerInterface
                 )
             );
             if ($output) {
-                throw new ExecuteException('Failed to merge "' . $file . '", because ' . $output . '.');
+                throw new HandlerException('Failed to merge "' . $file . '", because ' . $output . '.', HandlerException::CODE_EXECUTE);
             }
-        } catch (Exception $e) {
+        } catch (BaseException $e) {
             $this->getFileSystem()->delete($file);
             $this->addMessage(MessageConstant::TYPE_ERROR, $e->getMessage());
 

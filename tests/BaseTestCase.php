@@ -4,9 +4,9 @@ namespace Tests;
 
 use Dotenv\Dotenv;
 use PHPUnit\Runner\Version;
-use PHPUnit\Framework\TestCase as BaseTestCase;
+use PHPUnit\Framework\TestCase;
 
-class TestCase extends BaseTestCase
+class BaseTestCase extends TestCase
 {
     /** @var string */
     const PHPUNIT_MIN_VERSION = '0.0.0';

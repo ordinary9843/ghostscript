@@ -2,13 +2,13 @@
 
 namespace Tests\Factories;
 
-use Tests\TestCase;
+use Tests\BaseTestCase;
 use Ordinary9843\Configs\Config;
 use Ordinary9843\Handlers\Handler;
 use Ordinary9843\Factories\HandlerFactory;
-use Ordinary9843\Exceptions\ClassNotFoundException;
+use Ordinary9843\Exceptions\NotFoundException;
 
-class HandlerFactoryTest extends TestCase
+class HandlerFactoryTest extends BaseTestCase
 {
     /**
      * @return void
@@ -36,7 +36,7 @@ class HandlerFactoryTest extends TestCase
      */
     public function testCreateWithInvalidHandlerTypeShouldThrowsException(): void
     {
-        $this->expectException(ClassNotFoundException::class);
+        $this->expectException(NotFoundException::class);
         HandlerFactory::create('notFound', new Config([
             'binPath' => 'test_bin_path_1',
             'tmpPath' => 'test_tmp_path_1'

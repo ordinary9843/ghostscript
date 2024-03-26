@@ -4,7 +4,7 @@ namespace Ordinary9843\Configs;
 
 use Ordinary9843\Cores\FileSystem;
 use Ordinary9843\Helpers\PathHelper;
-use Ordinary9843\Exceptions\InvalidFilePathException;
+use Ordinary9843\Exceptions\InvalidException;
 
 class Config
 {
@@ -84,13 +84,13 @@ class Config
     /**
      * @return void
      * 
-     * @throws InvalidFilePathException
+     * @throws InvalidException
      */
     public function validateBinPath(): void
     {
         $binPath = $this->getBinPath();
         if (!$binPath || !self::$fileSystem->isValid($binPath) || !preg_match('/\d+.\d+/', shell_exec($binPath . ' --version'))) {
-            throw new InvalidFilePathException('The Ghostscript binary path is not set.', 0, null, [
+            throw new InvalidException('The Ghostscript binary path is not set.', InvalidException::CODE_FILEPATH, [
                 'binPath' => $binPath
             ]);
         }
