@@ -34,8 +34,10 @@ class ToImageHandler extends BaseHandler implements HandlerInterface
     public function execute(...$arguments): array
     {
         $this->validateBinPath();
-        $arguments = $this->getMappedArguments($arguments);
+        $this->mapArguments($arguments);
 
+        echo PHP_EOL . 'ToImage: ' . PHP_EOL;
+        print_r($arguments);
         try {
             $file = PathHelper::convertPathSeparator($arguments['file']);
             $path = PathHelper::convertPathSeparator($arguments['path']);

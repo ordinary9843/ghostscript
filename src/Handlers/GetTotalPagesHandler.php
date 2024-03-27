@@ -24,8 +24,10 @@ class GetTotalPagesHandler extends BaseHandler implements HandlerInterface
     public function execute(...$arguments): int
     {
         $this->validateBinPath();
-        $arguments = $this->getMappedArguments($arguments);
+        $this->mapArguments($arguments);
 
+        echo PHP_EOL . 'GetTotalPages: ' . PHP_EOL;
+        print_r($arguments);
         try {
             $file = PathHelper::convertPathSeparator($arguments['file']);
             if (!$this->isFile($file)) {
