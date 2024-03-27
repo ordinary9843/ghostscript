@@ -19,8 +19,9 @@ class MergeHandlerTest extends BaseTestCase
         $property = $reflection->getProperty('argumentsMapping');
         $property->setAccessible(true);
         $argumentsMapping = $property->getValue($handler);
-        $this->assertCount(3, $argumentsMapping);
-        $this->assertContains('file', $argumentsMapping);
+        $this->assertCount(4, $argumentsMapping);
+        $this->assertContains('path', $argumentsMapping);
+        $this->assertContains('filename', $argumentsMapping);
         $this->assertContains('files', $argumentsMapping);
         $this->assertContains('isAutoConvert', $argumentsMapping);
     }
@@ -30,10 +31,12 @@ class MergeHandlerTest extends BaseTestCase
      */
     public function testExecuteShouldSucceed(): void
     {
-        $file = dirname(__DIR__, 2) . '/files/merge/test.pdf';
+        $path = dirname(__DIR__, 2) . '/files/merge';
+        $filename = 'res.pdf';
+        $file = $path . '/' . $filename;
         $handler = new MergeHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $mergedFile = $handler->execute($file, [
+        $mergedFile = $handler->execute($path, $filename, [
             dirname(__DIR__, 2) . '/files/merge/part_1.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_2.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_3.pdf'
@@ -47,10 +50,12 @@ class MergeHandlerTest extends BaseTestCase
      */
     public function testExecuteWhenFilenameHasChineseShouldSucceed(): void
     {
-        $file = dirname(__DIR__, 2) . '/files/merge/test.pdf';
+        $path = dirname(__DIR__, 2) . '/files/merge';
+        $filename = 'res.pdf';
+        $file = $path . '/' . $filename;
         $handler = new MergeHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $mergedFile = $handler->execute($file, [
+        $mergedFile = $handler->execute($path, $filename, [
             dirname(__DIR__, 2) . '/files/gs_ -test/中文.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_1.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_2.pdf',
@@ -65,10 +70,12 @@ class MergeHandlerTest extends BaseTestCase
      */
     public function testExecuteWhenFileDoesNotExistShouldSkipProcessing(): void
     {
-        $file = dirname(__DIR__, 2) . '/files/merge/test.pdf';
+        $path = dirname(__DIR__, 2) . '/files/merge';
+        $filename = 'res.pdf';
+        $file = $path . '/' . $filename;
         $handler = new MergeHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $mergedFile = $handler->execute($file, [
+        $mergedFile = $handler->execute($path, $filename, [
             dirname(__DIR__, 2) . '/files/merge/part_1.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_2.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_3.pdf',
@@ -83,9 +90,11 @@ class MergeHandlerTest extends BaseTestCase
      */
     public function testExecuteWhenFileTypeNotMatchShouldSkipProcessing(): void
     {
-        $file = dirname(__DIR__, 2) . '/files/merge/test.pdf';
+        $path = dirname(__DIR__, 2) . '/files/merge';
+        $filename = 'res.pdf';
+        $file = $path . '/' . $filename;
         $handler = new MergeHandler();
-        $mergedFile = $handler->execute($file, [
+        $mergedFile = $handler->execute($path, $filename, [
             dirname(__DIR__, 2) . '/files/merge/part_1.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_2.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_3.pdf',
@@ -102,12 +111,14 @@ class MergeHandlerTest extends BaseTestCase
     {
         $this->expectException(HandlerException::class);
         $this->expectExceptionCode(HandlerException::CODE_EXECUTE);
-        $file = dirname(__DIR__, 2) . '/files/merge/test.pdf';
+        $path = dirname(__DIR__, 2) . '/files/merge';
+        $filename = 'res.pdf';
+        $file = $path . '/' . $filename;
         $handler = new MergeHandler();
         $handler->setOptions([
             'test' => true
         ]);
-        $handler->execute($file, [
+        $handler->execute($path, $filename, [
             dirname(__DIR__, 2) . '/files/merge/part_1.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_2.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_3.pdf'

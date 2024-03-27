@@ -29,7 +29,7 @@ class GhostscriptTest extends BaseTestCase
      */
     public function testMergesShouldSucceed(): void
     {
-        $this->assertIsString((new Ghostscript($this->getEnv('GS_BIN_PATH')))->merge(dirname(__DIR__, 1) . '/files/merge/test.pdf', [
+        $this->assertIsString((new Ghostscript($this->getEnv('GS_BIN_PATH')))->merge(dirname(__DIR__, 1) . '/files/merge', 'res.pdf', [
             dirname(__DIR__, 1) . '/files/merge/part_1.pdf',
             dirname(__DIR__, 1) . '/files/merge/part_2.pdf',
             dirname(__DIR__, 1) . '/files/merge/part_3.pdf'

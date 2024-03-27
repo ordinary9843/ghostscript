@@ -10,7 +10,7 @@ use Ordinary9843\Interfaces\HandlerInterface;
 /**
  * @method string convert(string $file, float $version)
  * @method float guess(string $file)
- * @method string merge(string $file, array $files)
+ * @method string merge(string $path, string $filename, array $files, bool $isAutoConvert = true)
  * @method array split(string $file, string $path)
  * @method array toImage(string $file, string $path, string $type = 'jpeg')
  * @method int getTotalPages(string $file)

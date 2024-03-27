@@ -74,16 +74,16 @@ $ghostscript->guess($file);
 /**
  * This function converts the version of the input PDF file to the specified PDF version.
  *
- * Output: './files/merge/test.pdf'
+ * Output: './files/convert/test.pdf'
  */
 $ghostscript->convert($file, GhostscriptConstant::STABLE_VERSION);
 
 /**
  * This function merges multiple PDF files into a single PDF file.
  *
- * Output: './files/merge/test.pdf'
+ * Output: './files/merge/res.pdf'
  */
-$ghostscript->merge('./files/merge/test.pdf', [
+$ghostscript->merge('./files/merge', 'res.pdf', [
     './files/merge/part_1.pdf',
     './files/merge/part_2.pdf',
     './files/merge/part_3.pdf'

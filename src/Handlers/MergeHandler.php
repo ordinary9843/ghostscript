@@ -15,7 +15,7 @@ use Ordinary9843\Constants\GhostscriptConstant;
 class MergeHandler extends BaseHandler implements HandlerInterface
 {
     /** @var array */
-    protected $argumentsMapping = ['file', 'files', 'isAutoConvert'];
+    protected $argumentsMapping = ['path', 'filename', 'files', 'isAutoConvert'];
 
     /** @var ConvertHandler */
     protected $convertHandler = null;
@@ -43,9 +43,12 @@ class MergeHandler extends BaseHandler implements HandlerInterface
         $this->mapArguments($arguments);
 
         try {
-            $file = PathHelper::convertPathSeparator($arguments['file']);
+            $path = PathHelper::convertPathSeparator($arguments['path']);
+            $filename = PathHelper::convertPathSeparator($arguments['filename']);
             $files = $arguments['files'];
             $isAutoConvert = $arguments['isAutoConvert'] ? (bool)$arguments['isAutoConvert'] : true;
+            (!$this->isDir($path)) && $this->makeDir($path);
+            $file = $path . '/' . $filename;
             $files = array_filter($files, function ($value) use ($isAutoConvert) {
                 $value = PathHelper::convertPathSeparator($value);
                 if (!$this->isFile($value) || !$this->isPdf($value)) {

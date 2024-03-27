@@ -4,7 +4,7 @@
 vendor/
 report/
 files/split/parts/
-files/merge/test.pdf
+files/merge/res.pdf
 files/to-image/images/
 composer.lock
 coverage.xml
