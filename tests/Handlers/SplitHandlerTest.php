@@ -11,7 +11,7 @@ class SplitHandlerTest extends BaseTestCase
     /**
      * @return void
      */
-    public function testExecuteWithExistFileShouldSucceed(): void
+    public function testExecuteShouldSucceed(): void
     {
         $handler = new SplitHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));

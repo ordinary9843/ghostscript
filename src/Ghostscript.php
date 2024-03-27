@@ -13,6 +13,7 @@ use Ordinary9843\Interfaces\HandlerInterface;
  * @method string merge(string $file, array $files)
  * @method array split(string $file, string $path)
  * @method array toImage(string $file, string $path, string $type = 'jpeg')
+ * @method int getTotalPages(string $file)
  * @method void setBinPath(string $binPath)
  * @method string getBinPath()
  * @method void setTmpPath(string $tmpPath)
@@ -58,7 +59,7 @@ class Ghostscript
             case 'merge':
             case 'split':
             case 'toImage':
-                // case 'getTotalPages':
+            case 'getTotalPages':
                 $handler = $this->createHandler($name);
 
                 return $handler->execute(...$arguments);

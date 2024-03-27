@@ -19,7 +19,7 @@ class GhostscriptTest extends BaseTestCase
     /**
      * @return void
      */
-    public function testGuessWithExistFileShouldSucceed(): void
+    public function testGuessShouldSucceed(): void
     {
         $this->assertIsFloat((new Ghostscript($this->getEnv('GS_BIN_PATH')))->guess(dirname(__DIR__, 1) . '/files/guess/test.pdf'));
     }
@@ -27,7 +27,7 @@ class GhostscriptTest extends BaseTestCase
     /**
      * @return void
      */
-    public function testMergeWithExistFilesShouldSucceed(): void
+    public function testMergesShouldSucceed(): void
     {
         $this->assertIsString((new Ghostscript($this->getEnv('GS_BIN_PATH')))->merge(dirname(__DIR__, 1) . '/files/merge/test.pdf', [
             dirname(__DIR__, 1) . '/files/merge/part_1.pdf',
@@ -39,7 +39,7 @@ class GhostscriptTest extends BaseTestCase
     /**
      * @return void
      */
-    public function testSplitWithExistFilesShouldSucceed(): void
+    public function testSplitShouldSucceed(): void
     {
         $this->assertIsArray((new Ghostscript($this->getEnv('GS_BIN_PATH')))->split(dirname(__DIR__, 1) . '/files/split/test.pdf', dirname(__DIR__, 1) . '/files/split/parts'));
     }
@@ -47,10 +47,19 @@ class GhostscriptTest extends BaseTestCase
     /**
      * @return void
      */
-    public function testToImageWithExistFilesShouldSucceed(): void
+    public function testToImageShouldSucceed(): void
     {
         $this->assertIsArray((new Ghostscript($this->getEnv('GS_BIN_PATH')))->toImage(dirname(__DIR__, 1) . '/files/to-image/test.pdf', dirname(__DIR__, 1) . '/files/to-image/images'));
     }
+
+    /**
+     * @return void
+     */
+    public function testGetTotalPagesShouldSucceed(): void
+    {
+        $this->assertIsInt((new Ghostscript($this->getEnv('GS_BIN_PATH')))->getTotalPages(dirname(__DIR__, 1) . '/files/get-total-pages/test.pdf'));
+    }
+
 
     /**
      * @return void

@@ -16,12 +16,12 @@ class GetTotalPagesHandler extends BaseHandler implements HandlerInterface
     /**
      * @param array ...$arguments
      * 
-     * @return string
+     * @return int
      * 
      * @throws HandlerException
      * @throws InvalidException
      */
-    public function execute(...$arguments): string
+    public function execute(...$arguments): int
     {
         $this->validateBinPath();
         $this->mapArguments($arguments);

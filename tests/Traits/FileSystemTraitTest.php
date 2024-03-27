@@ -72,7 +72,7 @@ class FileSystemTraitTest extends BaseTestCase
     /**
      * @return void
      */
-    public function testShouldDeleteFile(): void
+    public function testDeleteFileShouldSucceed(): void
     {
         $path = '/tmp/mock/ghostscript';
         @mkdir($path, 0755, true);
@@ -87,12 +87,22 @@ class FileSystemTraitTest extends BaseTestCase
     /**
      * @return void
      */
-    public function testShouldDeleteDirectory(): void
+    public function testDeleteDirectoryShouldSucceed(): void
     {
         $path = '/tmp/mock/ghostscript';
         @mkdir($path, 0755, true);
         $this->assertEquals(true, $this->isDir($path));
         $this->delete($path);
         $this->assertEquals(false, $this->isDir($path));
+    }
+
+    /**
+     * @return void
+     */
+    public function testMakeDirectoryShouldSucceed(): void
+    {
+        $path = '/tmp/mock/ghostscript';
+        $this->makeDir($path);
+        $this->assertEquals(true, $this->isDir($path));
     }
 }

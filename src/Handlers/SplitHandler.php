@@ -39,7 +39,7 @@ class SplitHandler extends BaseHandler implements HandlerInterface
             $file = PathHelper::convertPathSeparator($arguments['file']);
             $path = $arguments['path'];
             $totalPages = $this->getTotalPagesHandler->execute($file);
-            (!$this->isDir($path)) && mkdir($path, 0755);
+            (!$this->isDir($path)) && $this->makeDir($path);
             $pdfFormatPath = '/part_%d.pdf';
             $output = shell_exec($this->optionsToCommand($this->getBinPath() . ' -sDEVICE=pdfwrite -dQUIET -dNOPAUSE -dBATCH -dSAFER -dFirstPage=1 -dLastPage=' . $totalPages . ' -sOutputFile=' . escapeshellarg(PathHelper::convertPathSeparator($path . $pdfFormatPath)) . ' ' . escapeshellarg(PathHelper::convertPathSeparator($this->convertToTmpFile($file)))));
             if ($output) {

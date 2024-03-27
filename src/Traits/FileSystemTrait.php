@@ -47,4 +47,15 @@ trait FileSystemTrait
             @rmdir($path);
         }
     }
+
+    /**
+     * @param string $path
+     * @param string $permission
+     *
+     * @return void
+     */
+    public function makeDir(string $path, string $permission = '0755'): void
+    {
+        @mkdir($path, $permission);
+    }
 }
