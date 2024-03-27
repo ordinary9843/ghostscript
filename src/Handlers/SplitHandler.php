@@ -7,11 +7,20 @@ use Ordinary9843\Exceptions\BaseException;
 use Ordinary9843\Exceptions\HandlerException;
 use Ordinary9843\Exceptions\InvalidException;
 use Ordinary9843\Interfaces\HandlerInterface;
+use Ordinary9843\Handlers\GetTotalPagesHandler;
 
 class SplitHandler extends BaseHandler implements HandlerInterface
 {
     /** @var array */
     protected $argumentsMapping = ['file', 'path'];
+
+    /** @var GetTotalPagesHandler */
+    protected $getTotalPagesHandler = null;
+
+    public function __construct()
+    {
+        $this->getTotalPagesHandler = new GetTotalPagesHandler();
+    }
 
     /**
      * @param array ...$arguments
@@ -26,25 +35,20 @@ class SplitHandler extends BaseHandler implements HandlerInterface
         $this->validateBinPath();
         $this->mapArguments($arguments);
 
-
         try {
             $file = PathHelper::convertPathSeparator($arguments['file']);
             $path = $arguments['path'];
-            $totalPage = $this->getPdfTotalPage($file);
-            if ($totalPage < 1) {
-                throw new HandlerException('Failed to read the total number of pages in "' . $file . '".', HandlerException::CODE_EXECUTE);
-            }
-
+            $totalPages = $this->getTotalPagesHandler->execute($file);
             (!$this->isDir($path)) && mkdir($path, 0755);
             $pdfFormatPath = '/part_%d.pdf';
-            $output = shell_exec($this->optionsToCommand($this->getBinPath() . ' -sDEVICE=pdfwrite -dQUIET -dNOPAUSE -dBATCH -dSAFER -dFirstPage=1 -dLastPage=' . $totalPage . ' -sOutputFile=' . escapeshellarg(PathHelper::convertPathSeparator($path . $pdfFormatPath)) . ' ' . escapeshellarg(PathHelper::convertPathSeparator($this->convertToTmpFile($file)))));
+            $output = shell_exec($this->optionsToCommand($this->getBinPath() . ' -sDEVICE=pdfwrite -dQUIET -dNOPAUSE -dBATCH -dSAFER -dFirstPage=1 -dLastPage=' . $totalPages . ' -sOutputFile=' . escapeshellarg(PathHelper::convertPathSeparator($path . $pdfFormatPath)) . ' ' . escapeshellarg(PathHelper::convertPathSeparator($this->convertToTmpFile($file)))));
             if ($output) {
                 throw new HandlerException('Failed to merge "' . $file . '", because ' . $output . '.', HandlerException::CODE_EXECUTE);
             }
 
             return array_map(function ($i) use ($path, $pdfFormatPath) {
                 return $path . sprintf($pdfFormatPath, $i);
-            }, range(0, $totalPage - 1));
+            }, range(0, $totalPages - 1));
         } catch (BaseException $exception) {
             throw new HandlerException($exception->getMessage(), HandlerException::CODE_EXECUTE, [
                 'arguments' => $arguments

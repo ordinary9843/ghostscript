@@ -2,69 +2,43 @@
 
 namespace Tests\Handlers;
 
-use Tests\TestCase;
-use Ordinary9843\Configs\Config;
+use Tests\BaseTestCase;
 use Ordinary9843\Handlers\SplitHandler;
-use Ordinary9843\Constants\MessageConstant;
+use Ordinary9843\Exceptions\HandlerException;
 
-class SplitHandlerTest extends TestCase
+class SplitHandlerTest extends BaseTestCase
 {
     /**
      * @return void
      */
     public function testExecuteWithExistFileShouldSucceed(): void
     {
-        $splitHandler = new SplitHandler();
-        $splitHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $this->assertCount(3, $splitHandler->execute(dirname(__DIR__, 2) . '/files/split/test.pdf', '/tmp/mock/files'));
-        $this->assertFalse($splitHandler->hasMessages(MessageConstant::TYPE_ERROR));
+        $handler = new SplitHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $this->assertCount(3, $handler->execute(dirname(__DIR__, 2) . '/files/split/test.pdf', '/tmp/mock/files'));
     }
 
     /**
      * @return void
      */
-    public function testExecuteWithExistFileShouldSucceedWhenFilenameHasChinese(): void
+    public function testExecuteWhenFilenameHasChineseShouldSucceed(): void
     {
-        $splitHandler = new SplitHandler();
-        $splitHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $this->assertCount(1, $splitHandler->execute(dirname(__DIR__, 2) . '/files/gs_ -test/中文.pdf', '/tmp/mock/files'));
-        $this->assertFalse($splitHandler->hasMessages(MessageConstant::TYPE_ERROR));
+        $handler = new SplitHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $this->assertCount(1, $handler->execute(dirname(__DIR__, 2) . '/files/gs_ -test/中文.pdf', '/tmp/mock/files'));
     }
 
     /**
      * @return void
      */
-    public function testExecuteWithNotExistFileShouldReturnErrorMessage(): void
+    public function testExecuteFailedShouldShouldThrowHandlerException(): void
     {
-        $methods = ['getPdfTotalPage', 'getConfig'];
-        if ($this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9)) {
-            $splitHandler = $this->getMockBuilder(SplitHandler::class)
-                ->setMethods($methods)
-                ->getMock();
-        } else {
-            $splitHandler = $this->getMockBuilder(SplitHandler::class)
-                ->onlyMethods($methods)
-                ->getMock();
-        }
-
-        $splitHandler->method('getConfig')->willReturn(new Config(['binPath' => $this->getEnv('GS_BIN_PATH')]));
-        $splitHandler->method('getPdfTotalPage')->willReturn(0);
-        $this->assertCount(0, $splitHandler->execute(dirname(__DIR__, 2) . '/files/split/test.pdf', '/tmp/mock/files'));
-        $this->assertTrue($splitHandler->hasMessages(MessageConstant::TYPE_ERROR));
-    }
-
-    /**
-     * @return void
-     */
-    public function testExecuteFailedShouldReturnErrorMessage(): void
-    {
-        $splitHandler = new SplitHandler(new Config([
-            'binPath' => $this->getEnv('GS_BIN_PATH')
-        ]));
-        $splitHandler->setOptions([
+        $this->expectException(HandlerException::class);
+        $handler = new SplitHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $handler->setOptions([
             'test' => true
         ]);
-        $splitHandler->execute(dirname(__DIR__, 2) . '/files/split/test.pdf', '/tmp/mock/files');
-        $this->assertTrue($splitHandler->hasMessages(MessageConstant::TYPE_ERROR));
+        $handler->execute(dirname(__DIR__, 2) . '/files/split/test.pdf', '/tmp/mock/files');
     }
 }
