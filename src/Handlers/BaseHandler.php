@@ -34,19 +34,6 @@ class BaseHandler implements HandlerInterface
     }
 
     /**
-     * @param array $arguments
-     * 
-     * @return void
-     */
-    protected function mapArguments(array &$arguments): void
-    {
-        if (!empty($this->argumentsMapping)) {
-            $arguments += array_fill(0, count($this->argumentsMapping), null);
-            $arguments = array_combine($this->argumentsMapping, $arguments);
-        }
-    }
-
-    /**
      * @param array ...$arguments
      * 
      * @return mixed
@@ -74,14 +61,6 @@ class BaseHandler implements HandlerInterface
     public function getOptions(): array
     {
         return $this->options;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getTmpFiles(): array
-    {
-        return $this->tmpFiles;
     }
 
     /**
@@ -180,6 +159,29 @@ class BaseHandler implements HandlerInterface
     }
 
     /**
+     * @return void
+     * 
+     * @throws InvalidException
+     */
+    public function validateBinPath(): void
+    {
+        $binPath = $this->getBinPath();
+        if (!$binPath || !$this->isValid($binPath) || !preg_match('/\d+.\d+/', shell_exec($binPath . ' --version'))) {
+            throw new InvalidException('The Ghostscript binary path is not set.', InvalidException::CODE_FILEPATH, [
+                'binPath' => $binPath
+            ]);
+        }
+    }
+
+    /**
+     * @return array
+     */
+    protected function getTmpFiles(): array
+    {
+        return $this->tmpFiles;
+    }
+
+    /**
      * @param string $file
      *
      * @return string
@@ -204,17 +206,15 @@ class BaseHandler implements HandlerInterface
     }
 
     /**
-     * @return void
+     * @param array $arguments
      * 
-     * @throws InvalidException
+     * @return void
      */
-    public function validateBinPath(): void
+    protected function mapArguments(array &$arguments): void
     {
-        $binPath = $this->getBinPath();
-        if (!$binPath || !$this->isValid($binPath) || !preg_match('/\d+.\d+/', shell_exec($binPath . ' --version'))) {
-            throw new InvalidException('The Ghostscript binary path is not set.', InvalidException::CODE_FILEPATH, [
-                'binPath' => $binPath
-            ]);
+        if (!empty($this->argumentsMapping)) {
+            $arguments += array_fill(0, count($this->argumentsMapping), null);
+            $arguments = array_combine($this->argumentsMapping, $arguments);
         }
     }
 }

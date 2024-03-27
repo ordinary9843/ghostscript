@@ -13,65 +13,6 @@ class BaseHandlerTest extends BaseTestCase
     /**
      * @return void
      */
-    public function testArgumentsMappingWhenProvidedInputs()
-    {
-        $handler = new BaseHandler();
-        $reflection = new ReflectionClass($handler);
-        $property = $reflection->getProperty('argumentsMapping');
-        $property->setAccessible(true);
-        $property->setValue($handler, ['arg1', 'arg2']);
-        $arguments = ['value1', 'value2'];
-        $method = $reflection->getMethod('mapArguments');
-        $method->setAccessible(true);
-        $method->invokeArgs($handler, [&$arguments]);
-        $this->assertEquals([
-            'arg1' => 'value1',
-            'arg2' => 'value2'
-        ], $arguments);
-    }
-
-    /**
-     * @return void
-     */
-    public function testConvertToTmpFile()
-    {
-        $handler = new BaseHandler();
-        $reflection = new ReflectionClass($handler);
-        $convertToTmpFileMethod = $reflection->getMethod('convertToTmpFile');
-        $convertToTmpFileMethod->setAccessible(true);
-        $file = tempnam(sys_get_temp_dir(), 'test');
-        @file_put_contents($file, '');
-        $tmpFile = $convertToTmpFileMethod->invokeArgs($handler, [$file]);
-        $this->assertFileExists($tmpFile);
-        $this->assertEquals('', @file_get_contents($tmpFile));
-
-        $getTmpFilesMethod = $reflection->getMethod('getTmpFiles');
-        $getTmpFilesMethod->setAccessible(true);
-        $tmpFiles = $getTmpFilesMethod->invoke($handler);
-        $this->assertContains($tmpFile, $tmpFiles);
-    }
-
-    /**
-     * @return void
-     */
-    public function testAddAndRetrieveTmpFiles()
-    {
-        $handler = new BaseHandler();
-        $reflection = new ReflectionClass($handler);
-        $addTmpFileMethod = $reflection->getMethod('addTmpFile');
-        $addTmpFileMethod->setAccessible(true);
-        $addTmpFileMethod->invokeArgs($handler, ['file1']);
-        $addTmpFileMethod->invokeArgs($handler, ['file2']);
-        $getTmpFilesMethod = $reflection->getMethod('getTmpFiles');
-        $getTmpFilesMethod->setAccessible(true);
-        $tmpFiles = $getTmpFilesMethod->invoke($handler);
-        $this->assertContains('file1', $tmpFiles);
-        $this->assertContains('file2', $tmpFiles);
-    }
-
-    /**
-     * @return void
-     */
     public function testExecuteShouldThrowHandlerException(): void
     {
         $handler = new BaseHandler();
@@ -106,7 +47,7 @@ class BaseHandlerTest extends BaseTestCase
     /**
      * @return void
      */
-    public function testCommandShouldIncludeOptions(): void
+    public function testClearTmpFilesShouldSucceed(): void
     {
         $handler = new BaseHandler();
         $reflection = new ReflectionClass($handler);
@@ -125,10 +66,18 @@ class BaseHandlerTest extends BaseTestCase
         $handler = new BaseHandler();
         $command = 'gs -sDEVICE=pdfwrite -dNOPAUSE';
         $this->assertEquals($command, $handler->optionsToCommand($command));
+    }
 
+    /**
+     * @return void
+     */
+    public function testCommandShouldIncludeOptions(): void
+    {
+        $handler = new BaseHandler();
         $handler->setOptions([
             '-dSAFER'
         ]);
+        $command = 'gs -sDEVICE=pdfwrite -dNOPAUSE';
         $this->assertEquals($command . ' -dSAFER', $handler->optionsToCommand($command));
     }
 
@@ -178,5 +127,64 @@ class BaseHandlerTest extends BaseTestCase
         $handler = new BaseHandler();
         $handler->setBinPath('');
         $handler->validateBinPath();
+    }
+
+    /**
+     * @return void
+     */
+    public function testConvertToTmpFile()
+    {
+        $handler = new BaseHandler();
+        $reflection = new ReflectionClass($handler);
+        $convertToTmpFileMethod = $reflection->getMethod('convertToTmpFile');
+        $convertToTmpFileMethod->setAccessible(true);
+        $file = tempnam(sys_get_temp_dir(), 'test');
+        @file_put_contents($file, '');
+        $tmpFile = $convertToTmpFileMethod->invokeArgs($handler, [$file]);
+        $this->assertFileExists($tmpFile);
+        $this->assertEquals('', @file_get_contents($tmpFile));
+
+        $getTmpFilesMethod = $reflection->getMethod('getTmpFiles');
+        $getTmpFilesMethod->setAccessible(true);
+        $tmpFiles = $getTmpFilesMethod->invoke($handler);
+        $this->assertContains($tmpFile, $tmpFiles);
+    }
+
+    /**
+     * @return void
+     */
+    public function testAddAndRetrieveTmpFiles()
+    {
+        $handler = new BaseHandler();
+        $reflection = new ReflectionClass($handler);
+        $addTmpFileMethod = $reflection->getMethod('addTmpFile');
+        $addTmpFileMethod->setAccessible(true);
+        $addTmpFileMethod->invokeArgs($handler, ['file1']);
+        $addTmpFileMethod->invokeArgs($handler, ['file2']);
+        $getTmpFilesMethod = $reflection->getMethod('getTmpFiles');
+        $getTmpFilesMethod->setAccessible(true);
+        $tmpFiles = $getTmpFilesMethod->invoke($handler);
+        $this->assertContains('file1', $tmpFiles);
+        $this->assertContains('file2', $tmpFiles);
+    }
+
+    /**
+     * @return void
+     */
+    public function testArgumentsMappingWhenProvidedInputs()
+    {
+        $handler = new BaseHandler();
+        $reflection = new ReflectionClass($handler);
+        $property = $reflection->getProperty('argumentsMapping');
+        $property->setAccessible(true);
+        $property->setValue($handler, ['arg1', 'arg2']);
+        $arguments = ['value1', 'value2'];
+        $method = $reflection->getMethod('mapArguments');
+        $method->setAccessible(true);
+        $method->invokeArgs($handler, [&$arguments]);
+        $this->assertEquals([
+            'arg1' => 'value1',
+            'arg2' => 'value2'
+        ], $arguments);
     }
 }
