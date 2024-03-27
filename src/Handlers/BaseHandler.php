@@ -5,7 +5,6 @@ namespace Ordinary9843\Handlers;
 use Ordinary9843\Configs\Config;
 use Ordinary9843\Traits\ConfigTrait;
 use Ordinary9843\Traits\FileSystemTrait;
-use Ordinary9843\Exceptions\BaseException;
 use Ordinary9843\Exceptions\HandlerException;
 use Ordinary9843\Exceptions\InvalidException;
 use Ordinary9843\Interfaces\HandlerInterface;
@@ -164,40 +163,6 @@ class BaseHandler implements HandlerInterface
         return (!empty($options)) ? $command .= ' ' . implode(' ', array_map(function ($key, $value) {
             return is_numeric($key) ? $value : $key . '=' . $value;
         }, array_keys($options), $options)) : $command;
-    }
-
-    // TODO: Move to Handler.
-    /**
-     * @param string $file
-     *
-     * @return int
-     * 
-     * @throws InvalidException
-     */
-    public function getPdfTotalPage(string $file): int
-    {
-        try {
-            $this->validateBinPath();
-            if (!$this->isFile($file)) {
-                throw new InvalidException('"' . $file . '" is not exist.', InvalidException::CODE_FILEPATH);
-            } elseif (!$this->isPdf($file)) {
-                throw new InvalidException('"' . $file . '" is not PDF.', InvalidException::CODE_FILE_TYPE);
-            }
-
-            $output = shell_exec(
-                sprintf(
-                    '%s -dQUIET -dNODISPLAY -dNOSAFER -c "(%s) (r) file runpdfbegin pdfpagecount = quit"',
-                    $this->getBinPath(),
-                    $file
-                )
-            );
-
-            return ($output) ? (int)$output : 0;
-        } catch (BaseException $exception) {
-            throw new HandlerException($exception->getMessage(), HandlerException::CODE_EXECUTE, [
-                'file' => $file
-            ], $exception);
-        }
     }
 
     /**

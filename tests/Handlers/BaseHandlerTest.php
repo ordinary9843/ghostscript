@@ -2,11 +2,10 @@
 
 namespace Tests\Handlers;
 
+use ReflectionClass;
 use Tests\BaseTestCase;
-use Ordinary9843\Configs\Config;
-use Ordinary9843\Cores\FileSystem;
-use Ordinary9843\Handlers\Handler;
-use Ordinary9843\Exceptions\BaseException;
+use Ordinary9843\Handlers\BaseHandler;
+use Ordinary9843\Exceptions\HandlerException;
 use Ordinary9843\Exceptions\InvalidException;
 
 class BaseHandlerTest extends BaseTestCase
@@ -14,73 +13,71 @@ class BaseHandlerTest extends BaseTestCase
     /**
      * @return void
      */
-    public function testSetConfigShouldEqualGetConfig(): void
+    public function testArgumentsMappingWhenProvidedInputs()
     {
-        $config = new Config([
-            'binPath' => $this->getEnv('GS_BIN_PATH'),
-            'tmpPath' => sys_get_temp_dir()
-        ]);
-        $handler = new Handler();
-        $handler->setConfig($config);
-        $this->assertEquals($config, $handler->getConfig());
+        $handler = new BaseHandler();
+        $reflection = new ReflectionClass($handler);
+        $property = $reflection->getProperty('argumentsMapping');
+        $property->setAccessible(true);
+        $property->setValue($handler, ['arg1', 'arg2']);
+        $arguments = ['value1', 'value2'];
+        $method = $reflection->getMethod('mapArguments');
+        $method->setAccessible(true);
+        $method->invokeArgs($handler, [&$arguments]);
+        $this->assertEquals([
+            'arg1' => 'value1',
+            'arg2' => 'value2'
+        ], $arguments);
     }
 
     /**
      * @return void
      */
-    public function testSetFileSystemShouldEqualGetFileSystem(): void
+    public function testConvertToTmpFile()
     {
-        $fileSystem = new FileSystem();
-        $handler = new Handler();
-        $handler->setFileSystem($fileSystem);
-        $this->assertEquals($fileSystem, $handler->getFileSystem());
+        $handler = new BaseHandler();
+        $reflection = new ReflectionClass($handler);
+        $convertToTmpFileMethod = $reflection->getMethod('convertToTmpFile');
+        $convertToTmpFileMethod->setAccessible(true);
+        $file = tempnam(sys_get_temp_dir(), 'test');
+        @file_put_contents($file, '');
+        $tmpFile = $convertToTmpFileMethod->invokeArgs($handler, [$file]);
+        $this->assertFileExists($tmpFile);
+        $this->assertEquals('', @file_get_contents($tmpFile));
+
+        $getTmpFilesMethod = $reflection->getMethod('getTmpFiles');
+        $getTmpFilesMethod->setAccessible(true);
+        $tmpFiles = $getTmpFilesMethod->invoke($handler);
+        $this->assertContains($tmpFile, $tmpFiles);
     }
 
     /**
      * @return void
      */
-    public function testSetBinPathShouldEqualGetBinPath(): void
+    public function testAddAndRetrieveTmpFiles()
     {
-        $binPath = $this->getEnv('GS_BIN_PATH');
-        $handler = new Handler();
-        $handler->setBinPath($binPath);
-        $this->assertEquals($binPath, $handler->getBinPath());
+        $handler = new BaseHandler();
+        $reflection = new ReflectionClass($handler);
+        $addTmpFileMethod = $reflection->getMethod('addTmpFile');
+        $addTmpFileMethod->setAccessible(true);
+        $addTmpFileMethod->invokeArgs($handler, ['file1']);
+        $addTmpFileMethod->invokeArgs($handler, ['file2']);
+        $getTmpFilesMethod = $reflection->getMethod('getTmpFiles');
+        $getTmpFilesMethod->setAccessible(true);
+        $tmpFiles = $getTmpFilesMethod->invoke($handler);
+        $this->assertContains('file1', $tmpFiles);
+        $this->assertContains('file2', $tmpFiles);
     }
 
     /**
      * @return void
      */
-    public function testSetTmpPathShouldEqualGetTmpPath(): void
+    public function testExecuteShouldThrowHandlerException(): void
     {
-        $tmpPath = sys_get_temp_dir();
-        $handler = new Handler();
-        $handler->setTmpPath($tmpPath);
-        $this->assertEquals($tmpPath, $handler->getTmpPath());
-    }
-
-    /**
-     * @return void
-     */
-    public function testValidateBinPathShouldReturnNull(): void
-    {
-        $fileSystem = $this->createMock(FileSystem::class);
-        $fileSystem->method('isValid')->willReturn(true);
-        $handler = new Handler();
-        $handler->setFileSystem($fileSystem);
-        $this->assertNull($handler->validateBinPath());
-    }
-
-    /**
-     * @return void
-     */
-    public function testValidateBinPathShouldThrowException(): void
-    {
-        $fileSystem = $this->createMock(FileSystem::class);
-        $fileSystem->method('isValid')->willReturn(false);
-        $handler = new Handler();
-        $handler->setFileSystem($fileSystem);
-        $this->expectException(InvalidException::class);
-        $this->assertNull($handler->validateBinPath());
+        $handler = new BaseHandler();
+        $this->expectException(HandlerException::class);
+        $this->expectExceptionCode(HandlerException::CODE_EXECUTE);
+        $handler->execute();
     }
 
     /**
@@ -91,7 +88,7 @@ class BaseHandlerTest extends BaseTestCase
         $options = [
             '-dSAFER'
         ];
-        $handler = new Handler();
+        $handler = new BaseHandler();
         $handler->setOptions($options);
         $this->assertEquals($options, $handler->getOptions());
     }
@@ -99,9 +96,9 @@ class BaseHandlerTest extends BaseTestCase
     /**
      * @return void
      */
-    public function testTmpFileShouldHaveCorrectFormat(): void
+    public function testGetTmpFileShouldHaveCorrectFormat(): void
     {
-        $handler = new Handler();
+        $handler = new BaseHandler();
         $this->assertStringContainsString('/ghostscript_tmp_file_', $handler->getTmpFile());
         $this->assertStringEndsWith('.pdf', $handler->getTmpFile());
     }
@@ -111,7 +108,11 @@ class BaseHandlerTest extends BaseTestCase
      */
     public function testCommandShouldIncludeOptions(): void
     {
-        $handler = new Handler();
+        $handler = new BaseHandler();
+        $reflection = new ReflectionClass($handler);
+        $property = $reflection->getProperty('tmpFiles');
+        $property->setAccessible(true);
+        $property->setValue($handler, ['file1', 'file2']);
         $handler->clearTmpFiles(true);
         $this->assertEquals(0, $handler->getTmpFileCount());
     }
@@ -121,7 +122,7 @@ class BaseHandlerTest extends BaseTestCase
      */
     public function testCommandIncludesAdditionalOptionsAfterConversion(): void
     {
-        $handler = new Handler();
+        $handler = new BaseHandler();
         $command = 'gs -sDEVICE=pdfwrite -dNOPAUSE';
         $this->assertEquals($command, $handler->optionsToCommand($command));
 
@@ -134,65 +135,12 @@ class BaseHandlerTest extends BaseTestCase
     /**
      * @return void
      */
-    public function testGetPdfTotalPageShouldReturnGreaterThanZero(): void
-    {
-        $file = dirname(__DIR__, 2) . '/files/gs_ -test/test.pdf';
-        $config = new Config([
-            'binPath' => $this->getEnv('GS_BIN_PATH')
-        ]);
-        $handler = new Handler($config);
-        $this->assertGreaterThan(0, $handler->getPdfTotalPage($file));
-    }
-
-    /**
-     * @return void
-     */
-    public function testGetPdfTotalPageShouldReturnLessThanOrEqualZero(): void
-    {
-        $fileSystem = $this->createMock(FileSystem::class);
-        $fileSystem->method('isFile')->willReturn(false);
-        $fileSystem->method('isValid')->willReturn(true);
-        $file = dirname(__DIR__, 2) . '/files/gs_ -test/test.pdf';
-        $handler = new Handler(new Config([
-            'binPath' => $this->getEnv('GS_BIN_PATH'),
-            'fileSystem' => $fileSystem
-        ]));
-        $this->assertLessThanOrEqual(0, $handler->getPdfTotalPage($file));
-
-        $fileSystem = $this->createMock(FileSystem::class);
-        $fileSystem->method('isFile')->willReturn(true);
-        $fileSystem->method('isValid')->willReturn(true);
-        $file = dirname(__DIR__, 2) . '/files/gs_- test/test.txt';
-        $config = new Config([
-            'binPath' => $this->getEnv('GS_BIN_PATH'),
-            'fileSystem' => $fileSystem
-        ]);
-        $methods = ['isPdf'];
-        if ($this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9)) {
-            $handler = $this->getMockBuilder(Handler::class)
-                ->setConstructorArgs([$config])
-                ->setMethods($methods)
-                ->getMock();
-        } else {
-            $handler = $this->getMockBuilder(Handler::class)
-                ->setConstructorArgs([$config])
-                ->onlyMethods($methods)
-                ->getMock();
-        }
-
-        $handler->method('isPdf')->willReturn(false);
-        $this->assertLessThanOrEqual(0, $handler->getPdfTotalPage($file));
-    }
-
-    /**
-     * @return void
-     */
     public function testIsPdfShouldReturnTrue(): void
     {
         $file = tempnam(sys_get_temp_dir(), 'pdf');
         @file_put_contents($file, '%PDF-');
         @rename($file, $file .= '.pdf');
-        $handler = new Handler();
+        $handler = new BaseHandler();
         $this->assertTrue($handler->isPdf($file));
         @unlink($file);
     }
@@ -205,7 +153,7 @@ class BaseHandlerTest extends BaseTestCase
         $file = tempnam(sys_get_temp_dir(), 'txt');
         @file_put_contents($file, 'txt');
         @rename($file, $file .= '.txt');
-        $handler = new Handler();
+        $handler = new BaseHandler();
         $this->assertFalse($handler->isPdf($file));
         @unlink($file);
     }
@@ -213,10 +161,21 @@ class BaseHandlerTest extends BaseTestCase
     /**
      * @return void
      */
-    public function testExecuteShouldThrowException(): void
+    public function testValidateBinPathShouldReturnNull(): void
     {
-        $handler = new Handler();
-        $this->expectException(BaseException::class);
-        $this->assertNull($handler->execute());
+        $handler = new BaseHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $this->assertNull($handler->validateBinPath());
+    }
+
+    /**
+     * @return void
+     */
+    public function testValidateBinPathShouldThrowException(): void
+    {
+        $this->expectException(InvalidException::class);
+        $handler = new BaseHandler();
+        $handler->setBinPath('');
+        $handler->validateBinPath();
     }
 }
