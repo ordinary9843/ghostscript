@@ -16,7 +16,7 @@ class ToImageHandlerTest extends BaseTestCase
     {
         $handler = new ToImageHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $this->assertCount(3, $handler->execute(dirname(__DIR__, 2) . '/files/merge/test.pdf', '/tmp/mock/files'));
+        $this->assertCount(3, $handler->execute(dirname(__DIR__, 2) . '/files/convert/test.pdf', '/tmp/mock/files'));
     }
 
     // /**
