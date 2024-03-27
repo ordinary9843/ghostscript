@@ -11,7 +11,7 @@ trait FileSystemTrait
      */
     public function isValid(string $path): bool
     {
-        return ($path && ($this->isDir($path) || $this->isFile($path)));
+        return $path && ($this->isDir($path) || $this->isFile($path));
     }
 
     /**
@@ -21,7 +21,7 @@ trait FileSystemTrait
      */
     public function isDir(string $path): bool
     {
-        return ($path && is_dir($path));
+        return $path && is_dir($path);
     }
 
     /**
@@ -31,7 +31,7 @@ trait FileSystemTrait
      */
     public function isFile(string $path): bool
     {
-        return ($path && is_file($path));
+        return $path && is_file($path);
     }
 
     /**

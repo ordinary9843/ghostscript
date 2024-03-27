@@ -6,6 +6,7 @@ use Ordinary9843\Helpers\PathHelper;
 use Ordinary9843\Handlers\GuessHandler;
 use Ordinary9843\Handlers\ConvertHandler;
 use Ordinary9843\Exceptions\BaseException;
+use Ordinary9843\Factories\HandlerFactory;
 use Ordinary9843\Exceptions\HandlerException;
 use Ordinary9843\Exceptions\InvalidException;
 use Ordinary9843\Interfaces\HandlerInterface;
@@ -24,8 +25,8 @@ class MergeHandler extends BaseHandler implements HandlerInterface
 
     public function __construct()
     {
-        $this->convertHandler = new ConvertHandler();
-        $this->guessHandler = new GuessHandler();
+        $this->convertHandler = (new HandlerFactory())->create('convert');
+        $this->guessHandler = (new HandlerFactory())->create('guess');
     }
 
     /**
@@ -44,7 +45,7 @@ class MergeHandler extends BaseHandler implements HandlerInterface
         try {
             $file = PathHelper::convertPathSeparator($arguments['file']);
             $files = $arguments['files'];
-            $isAutoConvert = (bool)$arguments['isAutoConvert'];
+            $isAutoConvert = $arguments['isAutoConvert'] ? (bool)$arguments['isAutoConvert'] : true;
             $files = array_filter($files, function ($value) use ($isAutoConvert) {
                 $value = PathHelper::convertPathSeparator($value);
                 if (!$this->isFile($value) || !$this->isPdf($value)) {

@@ -4,6 +4,7 @@ namespace Ordinary9843\Handlers;
 
 use Ordinary9843\Helpers\PathHelper;
 use Ordinary9843\Exceptions\BaseException;
+use Ordinary9843\Factories\HandlerFactory;
 use Ordinary9843\Constants\ToImageConstant;
 use Ordinary9843\Exceptions\HandlerException;
 use Ordinary9843\Exceptions\InvalidException;
@@ -20,7 +21,7 @@ class ToImageHandler extends BaseHandler implements HandlerInterface
 
     public function __construct()
     {
-        $this->getTotalPagesHandler = new GetTotalPagesHandler();
+        $this->getTotalPagesHandler = (new HandlerFactory())->create('getTotalPages');
     }
 
     /**
