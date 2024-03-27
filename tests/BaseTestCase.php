@@ -3,17 +3,10 @@
 namespace Tests;
 
 use Dotenv\Dotenv;
-use PHPUnit\Runner\Version;
 use PHPUnit\Framework\TestCase;
 
 class BaseTestCase extends TestCase
 {
-    /** @var string */
-    const PHPUNIT_MIN_VERSION = '0.0.0';
-
-    /** @var string */
-    const PHPUNIT_VERSION_9 = '9.0.0';
-
     /** @var Dotenv */
     private static $dotenv;
 
@@ -31,18 +24,5 @@ class BaseTestCase extends TestCase
         }
 
         return $_ENV[$key] ?? $default;
-    }
-
-    /**
-     * @param string $minVersion
-     * @param string $maxVersion
-     *
-     * @return bool
-     */
-    protected function isPhpUnitVersionInRange(string $minVersion, string $maxVersion): bool
-    {
-        $currentVersion = Version::id();
-
-        return version_compare($currentVersion, $minVersion, '>=') && version_compare($currentVersion, $maxVersion, '<');
     }
 }
