@@ -2,11 +2,11 @@
 
 namespace Ordinary9843\Constants;
 
-class ToImageConstant
+class ImageTypeConstant
 {
     /** @var string */
-    const TYPE_JPEG = 'jpeg';
+    const JPEG = 'jpeg';
 
     /** @var string */
-    const TYPE_PNG = 'png';
+    const PNG = 'png';
 }

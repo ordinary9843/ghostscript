@@ -5,7 +5,7 @@ namespace Ordinary9843\Handlers;
 use Ordinary9843\Helpers\PathHelper;
 use Ordinary9843\Exceptions\BaseException;
 use Ordinary9843\Factories\HandlerFactory;
-use Ordinary9843\Constants\ToImageConstant;
+use Ordinary9843\Constants\ImageTypeConstant;
 use Ordinary9843\Exceptions\HandlerException;
 use Ordinary9843\Exceptions\InvalidException;
 use Ordinary9843\Interfaces\HandlerInterface;
@@ -40,11 +40,11 @@ class ToImageHandler extends BaseHandler implements HandlerInterface
         try {
             $file = PathHelper::convertPathSeparator($arguments['file']);
             $path = PathHelper::convertPathSeparator($arguments['path']);
-            $type = $arguments['type'] ? $arguments['type'] : ToImageConstant::TYPE_JPEG;
+            $type = $arguments['type'] ? $arguments['type'] : ImageTypeConstant::JPEG;
             $totalPages = $this->getTotalPagesHandler->execute($file);
             (!$this->isDir($path)) && $this->makeDir($path);
             $imageFormatPath = ($totalPages > 1) ? '/image_%d.' . $type : '/' . pathinfo($file, PATHINFO_FILENAME) . '.' . $type;
-            $output = shell_exec($this->optionsToCommand($this->getBinPath() . ' -dQUIET -dNOPAUSE -dBATCH -sDEVICE=' . ToImageConstant::TYPE_JPEG . ' -r300 -sOutputFile=' . escapeshellarg(PathHelper::convertPathSeparator($path . $imageFormatPath)) . ' ' . escapeshellarg(PathHelper::convertPathSeparator($this->convertToTmpFile($file)))));
+            $output = shell_exec($this->optionsToCommand($this->getBinPath() . ' -dQUIET -dNOPAUSE -dBATCH -sDEVICE=' . $type . ' -r300 -sOutputFile=' . escapeshellarg(PathHelper::convertPathSeparator($path . $imageFormatPath)) . ' ' . escapeshellarg(PathHelper::convertPathSeparator($this->convertToTmpFile($file)))));
             if ($output) {
                 throw new HandlerException('Failed to convert file "' . $file . '" to image, because ' . $output . '.', HandlerException::CODE_EXECUTE);
             }

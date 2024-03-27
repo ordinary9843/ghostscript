@@ -47,7 +47,7 @@ require './vendor/autoload.php';
 
 use Ordinary9843\Ghostscript;
 use Ordinary9843\Constants\GhostscriptConstant;
-use Ordinary9843\Constants\ToImageConstant;
+use Ordinary9843\Constants\ImageTypeConstant;
 use Ordinary9843\Constants\MessageConstant;
 
 $file = './files/gs_ -test/test.pdf';
@@ -110,7 +110,7 @@ $ghostscript->split('./files/split/test.pdf', './files/split/parts');
  *   './files/to-image/images/image_3.pdf'
  * ]
  */
-$ghostscript->toImage('./files/to-image/test.pdf', './files/to-image/images', ToImageConstant::TYPE_JPEG);
+$ghostscript->toImage('./files/to-image/test.pdf', './files/to-image/images', ImageTypeConstant::JPEG);
 
 /**
  * This function calculates and returns the total number of pages in a PDF file.

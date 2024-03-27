@@ -4,7 +4,7 @@ namespace Tests\Handlers;
 
 use Tests\BaseTestCase;
 use Ordinary9843\Handlers\ToImageHandler;
-use Ordinary9843\Constants\ToImageConstant;
+use Ordinary9843\Constants\ImageTypeConstant;
 use Ordinary9843\Exceptions\HandlerException;
 
 class ToImageHandlerTest extends BaseTestCase
@@ -26,7 +26,7 @@ class ToImageHandlerTest extends BaseTestCase
     {
         $handler = new ToImageHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $this->assertCount(3, $handler->execute(dirname(__DIR__, 2) . '/files/to-image/test.pdf', '/tmp/mock/files'), ToImageConstant::TYPE_JPEG);
+        $this->assertCount(3, $handler->execute(dirname(__DIR__, 2) . '/files/to-image/test.pdf', '/tmp/mock/files'), ImageTypeConstant::JPEG);
     }
 
     /**
@@ -36,7 +36,7 @@ class ToImageHandlerTest extends BaseTestCase
     {
         $handler = new ToImageHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $this->assertCount(3, $handler->execute(dirname(__DIR__, 2) . '/files/to-image/test.pdf', '/tmp/mock/files'), ToImageConstant::TYPE_PNG);
+        $this->assertCount(3, $handler->execute(dirname(__DIR__, 2) . '/files/to-image/test.pdf', '/tmp/mock/files'), ImageTypeConstant::PNG);
     }
 
     /**
