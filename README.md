@@ -56,31 +56,31 @@ $tmpPath = sys_get_temp_dir();
 $ghostscript = new Ghostscript($binPath, $tmpPath);
 
 /**
- * Set the binary path for PDF processing in Ghostscript.
+ * This function sets the path for the Ghostscript binary, which will be used for PDF processing.
  */
 $ghostscript->setBinPath($binPath);
 
 /**
- * Set the temporary file path for PDF processing in Ghostscript.
+ * This function sets the path for storing temporary files created during the PDF processing in Ghostscript.
  */
 $ghostscript->setTmpPath($tmpPath);
 
 /**
- * Guess the PDF version.
+ * This function analyzes the input PDF file and returns the guessed PDF version.
  *
  * Output: 1.5
  */
 $ghostscript->guess($file);
 
 /**
- * Convert the PDF version.
+ * This function converts the version of the input PDF file to the specified PDF version.
  *
  * Output: './files/merge/test.pdf'
  */
 $ghostscript->convert($file, GhostscriptConstant::STABLE_VERSION);
 
 /**
- * Merge all PDF.
+ * This function merges multiple PDF files into a single PDF file.
  *
  * Output: './files/merge/test.pdf'
  */
@@ -91,7 +91,7 @@ $ghostscript->merge('./files/merge/test.pdf', [
 ]);
 
 /**
- * Split all PDF.
+ * This function splits a PDF file into individual pages, each saved as a separate PDF file.
  *
  * Output: [
  *   './files/split/parts/part_1.pdf',
@@ -102,7 +102,7 @@ $ghostscript->merge('./files/merge/test.pdf', [
 $ghostscript->split('./files/split/test.pdf', './files/split/parts');
 
 /**
- * Convert PDF to images.
+ * This function converts each page of a PDF file into individual image files.
  *
  * Output: [
  *   './files/to-image/images/image_1.pdf',
@@ -111,6 +111,13 @@ $ghostscript->split('./files/split/test.pdf', './files/split/parts');
  * ]
  */
 $ghostscript->toImage('./files/to-image/test.pdf', './files/to-image/images', ToImageConstant::TYPE_JPEG);
+
+/**
+ * This function calculates and returns the total number of pages in a PDF file.
+ *
+ * Output: 3
+ */
+$ghostscript->getTotalPages('./files/get-total-pages/test.pdf');
 
 /**
  * Clear temporary files generated during the PDF processing.
