@@ -26,8 +26,6 @@ class GetTotalPagesHandler extends BaseHandler implements HandlerInterface
         $this->validateBinPath();
         $this->mapArguments($arguments);
 
-        echo PHP_EOL . 'GetTotalPages: ' . PHP_EOL;
-        print_r($arguments);
         try {
             $file = PathHelper::convertPathSeparator($arguments['file']);
             if (!$this->isFile($file)) {

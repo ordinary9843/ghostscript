@@ -36,12 +36,11 @@ class ToImageHandler extends BaseHandler implements HandlerInterface
         $this->validateBinPath();
         $this->mapArguments($arguments);
 
-        echo PHP_EOL . 'ToImage: ' . PHP_EOL;
-        print_r($arguments);
         try {
             $file = PathHelper::convertPathSeparator($arguments['file']);
             $path = PathHelper::convertPathSeparator($arguments['path']);
             $type = $arguments['type'] ? $arguments['type'] : ToImageConstant::TYPE_JPEG;
+            // TODO
             // $totalPages = $this->getTotalPagesHandler->execute($file);
             $totalPages = 3;
             (!$this->isDir($path)) && $this->makeDir($path);
