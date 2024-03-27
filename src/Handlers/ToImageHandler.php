@@ -42,7 +42,8 @@ class ToImageHandler extends BaseHandler implements HandlerInterface
             $file = PathHelper::convertPathSeparator($arguments['file']);
             $path = PathHelper::convertPathSeparator($arguments['path']);
             $type = $arguments['type'] ? $arguments['type'] : ToImageConstant::TYPE_JPEG;
-            $totalPages = $this->getTotalPagesHandler->execute($file);
+            // $totalPages = $this->getTotalPagesHandler->execute($file);
+            $totalPages = 3;
             (!$this->isDir($path)) && $this->makeDir($path);
             $imageFormatPath = ($totalPages > 1) ? '/image_%d.' . $type : '/' . pathinfo($file, PATHINFO_FILENAME) . '.' . $type;
             $output = shell_exec($this->optionsToCommand($this->getBinPath() . ' -dQUIET -dNOPAUSE -dBATCH -sDEVICE=' . ToImageConstant::TYPE_JPEG . ' -r300 -sOutputFile=' . escapeshellarg(PathHelper::convertPathSeparator($path . $imageFormatPath)) . ' ' . escapeshellarg(PathHelper::convertPathSeparator($this->convertToTmpFile($file)))));

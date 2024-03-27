@@ -40,6 +40,7 @@ class BaseHandler implements HandlerInterface
      */
     protected function mapArguments(array &$arguments): void
     {
+        print_r($arguments);
         if (!empty($this->argumentsMapping)) {
             $arguments += array_fill(0, count($this->argumentsMapping), null);
             $arguments = array_combine($this->argumentsMapping, $arguments);
