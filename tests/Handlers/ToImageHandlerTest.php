@@ -21,7 +21,7 @@ class ToImageHandlerTest extends BaseTestCase
         echo 'file: ' . dirname(__DIR__, 2) . '/files/to-image/test.pdf' . PHP_EOL;
         echo 'file: ' . dirname(__DIR__, 3) . '/files/to-image/test.pdf' . PHP_EOL;
 
-        $this->assertCount(3, $handler->execute(dirname(__DIR__, 2) . '/files/to-image/test.pdf', '/tmp/mock/files'));
+        $this->assertCount(3, $handler->execute(dirname(__DIR__, 1) . '/files/to-image/test.pdf', '/tmp/mock/files'));
     }
 
     // /**
