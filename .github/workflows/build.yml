@@ -26,6 +26,8 @@ jobs:
         run: composer self-update && composer install && composer dump-autoload
       - name: Copy .env.example to .env
         run: cp .env.example .env
+      - name: Set permissions for test.pdf
+        run: sudo chmod 777 /home/runner/work/ghostscript/ghostscript/tests/Handlers/test.pdf
       - name: Run tests
         run: composer test
       - name: Upload coverage to Codecov
