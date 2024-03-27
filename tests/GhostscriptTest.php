@@ -2,12 +2,11 @@
 
 namespace Tests;
 
-use Tests\TestCase;
+use Tests\BaseTestCase;
 use Ordinary9843\Ghostscript;
-use Ordinary9843\Exceptions\Exception;
-use Ordinary9843\Constants\MessageConstant;
+use Ordinary9843\Exceptions\BaseException;
 
-class GhostscriptTest extends TestCase
+class GhostscriptTest extends BaseTestCase
 {
     /**
      * @return void
@@ -89,57 +88,9 @@ class GhostscriptTest extends TestCase
     /**
      * @return void
      */
-    public function testGetMessagesShouldReturnArrayWhenTypeEqualNull(): void
-    {
-        $this->assertIsArray((new Ghostscript())->getMessages());
-    }
-
-    /**
-     * @return void
-     */
-    public function testGetMessagesShouldReturnArrayWhenTypeEqualInfo(): void
-    {
-        $this->assertIsArray((new Ghostscript())->getMessages(MessageConstant::TYPE_INFO));
-    }
-
-    /**
-     * @return void
-     */
-    public function testGetMessagesShouldReturnArrayWhenTypeEqualError(): void
-    {
-        $this->assertIsArray((new Ghostscript())->getMessages(MessageConstant::TYPE_ERROR));
-    }
-
-    /**
-     * @return void
-     */
-    public function testHasMessagesShouldReturnFalseWhenTypeEqualNull(): void
-    {
-        $this->assertFalse((new Ghostscript())->hasMessages());
-    }
-
-    /**
-     * @return void
-     */
-    public function testHasMessagesShouldReturnFalseWhenTypeEqualInfo(): void
-    {
-        $this->assertFalse((new Ghostscript())->hasMessages(MessageConstant::TYPE_INFO));
-    }
-
-    /**
-     * @return void
-     */
-    public function testHasMessagesShouldReturnFalseWhenTypeEqualError(): void
-    {
-        $this->assertFalse((new Ghostscript())->hasMessages(MessageConstant::TYPE_ERROR));
-    }
-
-    /**
-     * @return void
-     */
     public function testInvalidMethodShouldThrowException(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(BaseException::class);
         (new Ghostscript())->test();
     }
 }

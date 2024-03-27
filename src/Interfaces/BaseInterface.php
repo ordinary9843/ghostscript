@@ -2,30 +2,29 @@
 
 namespace Ordinary9843\Interfaces;
 
-// TODO
 interface BaseInterface
 {
-    // /**
-    //  * @param string $sourceType
-    //  * 
-    //  * @return void
-    //  */
-    // public function setSourceType(string $sourceType): void;
+    /**
+     * @param string $binPath
+     * 
+     * @return void
+     */
+    public function setBinPath(string $binPath): void;
 
-    // /**
-    //  * @return string
-    //  */
-    // public function getSourceType(): string;
+    /**
+     * @return string
+     */
+    public function getBinPath(): string;
 
-    // /**
-    //  * @param int $cacheTimeInSeconds
-    //  * 
-    //  * @return void
-    //  */
-    // public function setCacheTimeInSeconds(int $cacheTimeInSeconds): void;
+    /**
+     * @param string $tmpPath
+     * 
+     * @return void
+     */
+    public function setTmpPath(string $tmpPath): void;
 
-    // /**
-    //  * @return int
-    //  */
-    // public function getCacheTimeInSeconds(): int;
+    /**
+     * @return string
+     */
+    public function getTmpPath(): string;
 }

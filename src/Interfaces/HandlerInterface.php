@@ -10,4 +10,16 @@ interface HandlerInterface extends BaseInterface
      * @return mixed
      */
     public function execute(...$options);
+
+    /**
+     * @param array $options
+     *
+     * @return void
+     */
+    public function setOptions(array $options): void;
+
+    /**
+     * @return array
+     */
+    public function getOptions(): array;
 }

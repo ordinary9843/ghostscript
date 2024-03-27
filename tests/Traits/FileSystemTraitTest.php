@@ -1,21 +1,22 @@
 <?php
 
-namespace Tests\Cores;
+namespace Tests\Traits;
 
-use Tests\TestCase;
-use ordinary9843\Cores\FileSystem;
+use Tests\BaseTestCase;
+use Ordinary9843\Traits\FileSystemTrait;
 
-class FileSystemTest extends TestCase
+class FileSystemTraitTest extends BaseTestCase
 {
+    use FileSystemTrait;
+
     /**
      * @return void
      */
     public function testPathShouldValid(): void
     {
-        $fileSystem = new FileSystem();
         $path = '/tmp/mock/ghostscript';
         @mkdir($path, 0755, true);
-        $this->assertEquals(true, $fileSystem->isValid($path));
+        $this->assertEquals(true, $this->isValid($path));
         @rmdir($path);
     }
 
@@ -24,8 +25,7 @@ class FileSystemTest extends TestCase
      */
     public function testPathShouldNotValid(): void
     {
-        $fileSystem = new FileSystem();
-        $this->assertEquals(false, $fileSystem->isValid('/tmp/mock/ghostscript'));
+        $this->assertEquals(false, $this->isValid('/tmp/mock/ghostscript'));
     }
 
     /**
@@ -33,10 +33,9 @@ class FileSystemTest extends TestCase
      */
     public function testDirShouldExist(): void
     {
-        $fileSystem = new FileSystem();
         $path = '/tmp/mock/ghostscript';
         @mkdir($path, 0755, true);
-        $this->assertEquals(true, $fileSystem->isDir($path));
+        $this->assertEquals(true, $this->isDir($path));
         @rmdir($path);
     }
 
@@ -45,8 +44,7 @@ class FileSystemTest extends TestCase
      */
     public function testDirShouldNotExist(): void
     {
-        $fileSystem = new FileSystem();
-        $this->assertEquals(false, $fileSystem->isDir('/tmp/mock/ghostscript'));
+        $this->assertEquals(false, $this->isDir('/tmp/mock/ghostscript'));
     }
 
     /**
@@ -54,12 +52,11 @@ class FileSystemTest extends TestCase
      */
     public function testFileShouldExist(): void
     {
-        $fileSystem = new FileSystem();
         $path = '/tmp/mock/ghostscript';
         @mkdir($path, 0755, true);
         $file = '/tmp/mock/ghostscript/test.pdf';
         @file_put_contents($file, 'test');
-        $this->assertEquals(true, $fileSystem->isFile($file));
+        $this->assertEquals(true, $this->isFile($file));
         @unlink($file);
         @rmdir($path);
     }
@@ -69,8 +66,7 @@ class FileSystemTest extends TestCase
      */
     public function testFileShouldNotExist(): void
     {
-        $fileSystem = new FileSystem();
-        $this->assertEquals(false, $fileSystem->isFile('/tmp/mock/ghostscript/test.pdf'));
+        $this->assertEquals(false, $this->isFile('/tmp/mock/ghostscript/test.pdf'));
     }
 
     /**
@@ -78,14 +74,13 @@ class FileSystemTest extends TestCase
      */
     public function testShouldDeleteFile(): void
     {
-        $fileSystem = new FileSystem();
         $path = '/tmp/mock/ghostscript';
         @mkdir($path, 0755, true);
         $file = '/tmp/mock/ghostscript/test.pdf';
         @file_put_contents($file, 'test');
-        $this->assertEquals(true, $fileSystem->isFile($file));
-        $fileSystem->delete($file);
-        $this->assertEquals(false, $fileSystem->isFile($file));
+        $this->assertEquals(true, $this->isFile($file));
+        $this->delete($file);
+        $this->assertEquals(false, $this->isFile($file));
         @rmdir($path);
     }
 
@@ -94,11 +89,10 @@ class FileSystemTest extends TestCase
      */
     public function testShouldDeleteDirectory(): void
     {
-        $fileSystem = new FileSystem();
         $path = '/tmp/mock/ghostscript';
         @mkdir($path, 0755, true);
-        $this->assertEquals(true, $fileSystem->isDir($path));
-        $fileSystem->delete($path);
-        $this->assertEquals(false, $fileSystem->isDir($path));
+        $this->assertEquals(true, $this->isDir($path));
+        $this->delete($path);
+        $this->assertEquals(false, $this->isDir($path));
     }
 }

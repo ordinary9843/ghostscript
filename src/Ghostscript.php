@@ -3,9 +3,9 @@
 namespace Ordinary9843;
 
 use Ordinary9843\Configs\Config;
-use Ordinary9843\Handlers\Handler;
 use Ordinary9843\Factories\HandlerFactory;
 use Ordinary9843\Exceptions\InvalidException;
+use Ordinary9843\Interfaces\HandlerInterface;
 
 /**
  * @method string convert(string $file, float $version)
@@ -19,13 +19,14 @@ use Ordinary9843\Exceptions\InvalidException;
  * @method string getTmpPath()
  * @method void setOptions(array $options)
  * @method array getOptions()
- * @method array getMessages(string $type = null)
- * @method bool hasMessages(string $type = null)
  */
 class Ghostscript
 {
-    /** @var Handler */
-    private $handler = null;
+    /** @var HandlerInterface[] */
+    protected $handlers = [];
+
+    /** @var array */
+    protected $arguments = [];
 
     /**
      * @param string $binPath
@@ -33,10 +34,12 @@ class Ghostscript
      */
     public function __construct(string $binPath = '', string $tmpPath = '')
     {
-        $this->handler = HandlerFactory::create('', new Config([
+        $this->arguments = [
             'binPath' => $binPath,
             'tmpPath' => $tmpPath
-        ]));
+        ];
+
+        Config::initialize($this->arguments);
     }
 
     /**
@@ -55,23 +58,21 @@ class Ghostscript
             case 'merge':
             case 'split':
             case 'toImage':
-                return $this->execute($name, $arguments);
-            case 'setBinPath':
-                return $this->handler->setBinPath(current($arguments));
+            case 'setOptions';
+                $handler = $this->createHandler($name);
+
+                return $handler->execute(...$arguments);
             case 'getBinPath':
-                return $this->handler->getBinPath();
-            case 'setTmpPath':
-                return $this->handler->setTmpPath(current($arguments));
             case 'getTmpPath':
-                return $this->handler->getTmpPath();
-            case 'setOptions':
-                return $this->handler->setOptions(...$arguments);
             case 'getOptions':
-                return $this->handler->getOptions();
-            case 'getMessages':
-                return $this->handler->getMessages();
-            case 'hasMessages':
-                return $this->handler->hasMessages(current($arguments));
+                $handler = $this->createBaseHandler();
+
+                return $handler->{$name}();
+            case 'setBinPath':
+            case 'setTmpPath':
+                $handler = $this->createBaseHandler();
+
+                return $handler->{$name}(current($arguments));
             default:
                 throw new InvalidException('Invalid method: "' . $name . '".', InvalidException::CODE_METHOD, [
                     'name' => $name,
@@ -82,14 +83,25 @@ class Ghostscript
 
     /**
      * @param string $name
-     * @param array $arguments
      * 
-     * @return mixed
+     * @return HandlerInterface
      */
-    private function execute(string $name, array $arguments)
+    private function createHandler(string $name): HandlerInterface
     {
-        $this->handler = HandlerFactory::create($name, $this->handler->getConfig());
+        if (isset($this->handlers[$name])) {
+            return $this->handlers[$name];
+        }
 
-        return $this->handler->execute(...$arguments);
+        $this->handlers[$name] = (new HandlerFactory())->create($name);
+
+        return $this->handlers[$name];
+    }
+
+    /**
+     * @return HandlerInterface
+     */
+    private function createBaseHandler(): HandlerInterface
+    {
+        return $this->createHandler('base');
     }
 }
