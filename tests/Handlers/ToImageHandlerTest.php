@@ -55,6 +55,7 @@ class ToImageHandlerTest extends BaseTestCase
     public function testExecuteFailedShouldThrowHandlerException(): void
     {
         $this->expectException(HandlerException::class);
+        $this->expectExceptionCode(HandlerException::CODE_EXECUTE);
         $handler = new ToImageHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
         $handler->setOptions([

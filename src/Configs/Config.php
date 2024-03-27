@@ -84,6 +84,7 @@ class Config
      */
     public function setTmpPath(string $tmpPath): void
     {
+        (!$tmpPath) && $tmpPath = sys_get_temp_dir();
         $this->tmpPath = PathHelper::convertPathSeparator($tmpPath);
     }
 

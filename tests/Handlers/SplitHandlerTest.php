@@ -34,6 +34,7 @@ class SplitHandlerTest extends BaseTestCase
     public function testExecuteFailedShouldShouldThrowHandlerException(): void
     {
         $this->expectException(HandlerException::class);
+        $this->expectExceptionCode(HandlerException::CODE_EXECUTE);
         $handler = new SplitHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
         $handler->setOptions([

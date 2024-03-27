@@ -56,6 +56,7 @@ class ConvertHandlerTest extends BaseTestCase
     public function testExecuteWhenFileDoesNotExistShouldThrowHandlerException(): void
     {
         $this->expectException(HandlerException::class);
+        $this->expectExceptionCode(HandlerException::CODE_EXECUTE);
         $file = dirname(__DIR__, 2) . '/files/convert/part_1.pdf';
         $handler = new ConvertHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
@@ -68,6 +69,7 @@ class ConvertHandlerTest extends BaseTestCase
     public function testExecuteWhenFileTypeNotMatchShouldThrowHandlerException(): void
     {
         $this->expectException(HandlerException::class);
+        $this->expectExceptionCode(HandlerException::CODE_EXECUTE);
         $file = dirname(__DIR__, 2) . '/files/convert/test.txt';
         $handler = new ConvertHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
@@ -80,6 +82,7 @@ class ConvertHandlerTest extends BaseTestCase
     public function testExecuteFailedShouldThrowHandlerException(): void
     {
         $this->expectException(HandlerException::class);
+        $this->expectExceptionCode(HandlerException::CODE_EXECUTE);
         $file = dirname(__DIR__, 2) . '/files/convert/test.pdf';
         $handler = new ConvertHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));

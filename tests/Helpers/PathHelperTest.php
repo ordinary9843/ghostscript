@@ -2,10 +2,10 @@
 
 namespace Tests\Helpers;
 
-use Tests\TestCase;
+use Tests\BaseTestCase;
 use Ordinary9843\Helpers\PathHelper;
 
-class PathHelperTest extends TestCase
+class PathHelperTest extends BaseTestCase
 {
     /**
      * @return void

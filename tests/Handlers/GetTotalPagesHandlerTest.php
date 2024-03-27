@@ -55,6 +55,7 @@ class GetTotalPagesHandlerTest extends BaseTestCase
     public function testExecuteWhenFileDoesNotExistShouldThrowHandlerException(): void
     {
         $this->expectException(HandlerException::class);
+        $this->expectExceptionCode(HandlerException::CODE_EXECUTE);
         $file = dirname(__DIR__, 2) . '/files/get-total-pages/part_1.pdf';
         $handler = new GetTotalPagesHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
@@ -67,6 +68,7 @@ class GetTotalPagesHandlerTest extends BaseTestCase
     public function testExecuteWhenFileTypeNotMatchShouldThrowHandlerException(): void
     {
         $this->expectException(HandlerException::class);
+        $this->expectExceptionCode(HandlerException::CODE_EXECUTE);
         $file = dirname(__DIR__, 2) . '/files/get-total-pages/test.txt';
         $handler = new GetTotalPagesHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));

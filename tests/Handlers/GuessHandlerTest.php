@@ -41,6 +41,7 @@ class GuessHandlerTest extends BaseTestCase
     public function testExecuteShouldThrowInvalidException(): void
     {
         $this->expectException(HandlerException::class);
+        $this->expectExceptionCode(HandlerException::CODE_EXECUTE);
         $file = dirname(__DIR__, 2) . '/files/guess/part_4.pdf';
         $handler = new GuessHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));

@@ -74,6 +74,7 @@ class HandlerFactoryTest extends BaseTestCase
     public function testCreateBaseHandlerShouldThrowNotFoundException(): void
     {
         $this->expectException(NotFoundException::class);
+        $this->expectExceptionCode(NotFoundException::CODE_CLASS);
         (new HandlerFactory)->create('');
     }
 }

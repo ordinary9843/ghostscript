@@ -4,16 +4,16 @@ namespace Tests;
 
 use Tests\BaseTestCase;
 use Ordinary9843\Ghostscript;
-use Ordinary9843\Exceptions\BaseException;
+use Ordinary9843\Exceptions\InvalidException;
 
 class GhostscriptTest extends BaseTestCase
 {
     /**
      * @return void
      */
-    public function testConvertWithExistFileShouldSucceed(): void
+    public function testConvertShouldSucceed(): void
     {
-        $this->assertIsString((new Ghostscript($this->getEnv('GS_BIN_PATH')))->convert(dirname(__DIR__, 2) . '/files/convert/test.pdf', 1.5));
+        $this->assertIsString((new Ghostscript($this->getEnv('GS_BIN_PATH')))->convert(dirname(__DIR__, 1) . '/files/convert/test.pdf', 1.5));
     }
 
     /**
@@ -21,7 +21,7 @@ class GhostscriptTest extends BaseTestCase
      */
     public function testGuessWithExistFileShouldSucceed(): void
     {
-        $this->assertIsFloat((new Ghostscript($this->getEnv('GS_BIN_PATH')))->guess(dirname(__DIR__, 2) . '/files/guess/test.pdf'));
+        $this->assertIsFloat((new Ghostscript($this->getEnv('GS_BIN_PATH')))->guess(dirname(__DIR__, 1) . '/files/guess/test.pdf'));
     }
 
     /**
@@ -29,10 +29,10 @@ class GhostscriptTest extends BaseTestCase
      */
     public function testMergeWithExistFilesShouldSucceed(): void
     {
-        $this->assertIsString((new Ghostscript($this->getEnv('GS_BIN_PATH')))->merge(dirname(__DIR__, 2) . '/files/merge/test.pdf', [
-            dirname(__DIR__, 2) . '/files/merge/part_1.pdf',
-            dirname(__DIR__, 2) . '/files/merge/part_2.pdf',
-            dirname(__DIR__, 2) . '/files/merge/part_3.pdf'
+        $this->assertIsString((new Ghostscript($this->getEnv('GS_BIN_PATH')))->merge(dirname(__DIR__, 1) . '/files/merge/test.pdf', [
+            dirname(__DIR__, 1) . '/files/merge/part_1.pdf',
+            dirname(__DIR__, 1) . '/files/merge/part_2.pdf',
+            dirname(__DIR__, 1) . '/files/merge/part_3.pdf'
         ]));
     }
 
@@ -41,7 +41,7 @@ class GhostscriptTest extends BaseTestCase
      */
     public function testSplitWithExistFilesShouldSucceed(): void
     {
-        $this->assertIsArray((new Ghostscript($this->getEnv('GS_BIN_PATH')))->split(dirname(__DIR__, 2) . '/files/split/test.pdf', dirname(__DIR__, 2) . '/files/split/parts'));
+        $this->assertIsArray((new Ghostscript($this->getEnv('GS_BIN_PATH')))->split(dirname(__DIR__, 1) . '/files/split/test.pdf', dirname(__DIR__, 1) . '/files/split/parts'));
     }
 
     /**
@@ -49,7 +49,7 @@ class GhostscriptTest extends BaseTestCase
      */
     public function testToImageWithExistFilesShouldSucceed(): void
     {
-        $this->assertIsArray((new Ghostscript($this->getEnv('GS_BIN_PATH')))->toImage(dirname(__DIR__, 2) . '/files/to-image/test.pdf', dirname(__DIR__, 2) . '/files/to-image/images'));
+        $this->assertIsArray((new Ghostscript($this->getEnv('GS_BIN_PATH')))->toImage(dirname(__DIR__, 1) . '/files/to-image/test.pdf', dirname(__DIR__, 1) . '/files/to-image/images'));
     }
 
     /**
@@ -90,7 +90,8 @@ class GhostscriptTest extends BaseTestCase
      */
     public function testInvalidMethodShouldThrowException(): void
     {
-        $this->expectException(BaseException::class);
+        $this->expectException(InvalidException::class);
+        $this->expectExceptionCode(InvalidException::CODE_METHOD);
         (new Ghostscript())->test();
     }
 }

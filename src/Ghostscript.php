@@ -58,7 +58,7 @@ class Ghostscript
             case 'merge':
             case 'split':
             case 'toImage':
-            case 'setOptions';
+                // case 'getTotalPages':
                 $handler = $this->createHandler($name);
 
                 return $handler->execute(...$arguments);
@@ -73,6 +73,10 @@ class Ghostscript
                 $handler = $this->createBaseHandler();
 
                 return $handler->{$name}(current($arguments));
+            case 'setOptions':
+                $handler = $this->createBaseHandler();
+
+                return $handler->{$name}(...$arguments);
             default:
                 throw new InvalidException('Invalid method: "' . $name . '".', InvalidException::CODE_METHOD, [
                     'name' => $name,

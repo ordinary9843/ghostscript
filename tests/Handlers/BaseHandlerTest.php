@@ -174,6 +174,7 @@ class BaseHandlerTest extends BaseTestCase
     public function testValidateBinPathShouldThrowException(): void
     {
         $this->expectException(InvalidException::class);
+        $this->expectExceptionCode(InvalidException::CODE_FILEPATH);
         $handler = new BaseHandler();
         $handler->setBinPath('');
         $handler->validateBinPath();
