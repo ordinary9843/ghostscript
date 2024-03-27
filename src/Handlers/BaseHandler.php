@@ -47,6 +47,22 @@ class BaseHandler implements HandlerInterface
     }
 
     /**
+     * @param array $arguments
+     * 
+     * @return array
+     */
+    protected function getMappedArguments(array $arguments): array
+    {
+        if (empty($this->argumentsMapping)) {
+            return [];
+        }
+
+        $arguments += array_fill(0, count($this->argumentsMapping), null);
+
+        return array_combine($this->argumentsMapping, $arguments);
+    }
+
+    /**
      * @param array ...$arguments
      * 
      * @return mixed
