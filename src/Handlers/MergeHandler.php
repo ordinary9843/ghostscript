@@ -68,7 +68,7 @@ class MergeHandler extends BaseHandler implements HandlerInterface
                 )
             );
             if ($output) {
-                throw new HandlerException('Failed to merge "' . $file . '", because ' . $output . '.', HandlerException::CODE_EXECUTE);
+                throw new HandlerException('Failed to merge file "' . $file . '", because ' . $output . '.', HandlerException::CODE_EXECUTE);
             }
 
             return $file;

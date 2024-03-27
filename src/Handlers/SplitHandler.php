@@ -43,7 +43,7 @@ class SplitHandler extends BaseHandler implements HandlerInterface
             $pdfFormatPath = '/part_%d.pdf';
             $output = shell_exec($this->optionsToCommand($this->getBinPath() . ' -sDEVICE=pdfwrite -dQUIET -dNOPAUSE -dBATCH -dSAFER -dFirstPage=1 -dLastPage=' . $totalPages . ' -sOutputFile=' . escapeshellarg(PathHelper::convertPathSeparator($path . $pdfFormatPath)) . ' ' . escapeshellarg(PathHelper::convertPathSeparator($this->convertToTmpFile($file)))));
             if ($output) {
-                throw new HandlerException('Failed to merge "' . $file . '", because ' . $output . '.', HandlerException::CODE_EXECUTE);
+                throw new HandlerException('Failed to split file "' . $file . '", because ' . $output . '.', HandlerException::CODE_EXECUTE);
             }
 
             return array_map(function ($i) use ($path, $pdfFormatPath) {

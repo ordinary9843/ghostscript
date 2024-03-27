@@ -15,8 +15,7 @@ class SplitHandlerTest extends BaseTestCase
     {
         $handler = new SplitHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $file = dirname(__DIR__, 2) . '/files/split/test.pdf';
-        $this->assertCount(3, $handler->execute($file, '/tmp/mock/files'));
+        $this->assertCount(3, $handler->execute(dirname(__DIR__, 2) . '/files/split/test.pdf', '/tmp/mock/files'));
     }
 
     /**
@@ -26,8 +25,7 @@ class SplitHandlerTest extends BaseTestCase
     {
         $handler = new SplitHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $file = dirname(__DIR__, 2) . '/files/gs_ -test/中文.pdf';
-        $this->assertCount(1, $handler->execute($file, '/tmp/mock/files'));
+        $this->assertCount(1, $handler->execute(dirname(__DIR__, 2) . '/files/gs_ -test/中文.pdf', '/tmp/mock/files'));
     }
 
     /**
@@ -42,7 +40,6 @@ class SplitHandlerTest extends BaseTestCase
         $handler->setOptions([
             'test' => true
         ]);
-        $file = dirname(__DIR__, 2) . '/files/split/test.pdf';
-        $handler->execute($file, '/tmp/mock/files');
+        $handler->execute(dirname(__DIR__, 2) . '/files/split/test.pdf', '/tmp/mock/files');
     }
 }

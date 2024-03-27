@@ -49,7 +49,7 @@ class ConvertHandler extends BaseHandler implements HandlerInterface
                 )
             );
             if ($output) {
-                throw new HandlerException('Failed to convert "' . $file . '", because ' . $output . '.', HandlerException::CODE_EXECUTE);
+                throw new HandlerException('Failed to convert file "' . $file . '" version, because ' . $output . '.', HandlerException::CODE_EXECUTE);
             }
 
             @copy($tmpFile, $file);
