@@ -113,22 +113,6 @@ $ghostscript->split('./files/split/test.pdf', './files/split/parts');
 $ghostscript->toImage('./files/to-image/test.pdf', './files/to-image/images', ToImageConstant::TYPE_JPEG);
 
 /**
- * Check if there are any messages.
- *
- * Output: false
- */
-$ghostscript->hasMessages(MessageConstant::TYPE_ERROR);
-
-/**
- * Get all execution messages.
- *
- * Output: [
- *  '[ERROR] Message.'
- * ]
- */
-$ghostscript->getMessages(MessageConstant::TYPE_ERROR);
-
-/**
  * Clear temporary files generated during the PDF processing.
  */
 $ghostscript->clearTmpFiles();
