@@ -48,7 +48,6 @@ require './vendor/autoload.php';
 use Ordinary9843\Ghostscript;
 use Ordinary9843\Constants\GhostscriptConstant;
 use Ordinary9843\Constants\ImageTypeConstant;
-use Ordinary9843\Constants\MessageConstant;
 
 $file = './files/gs_ -test/test.pdf';
 $binPath = '/usr/bin/gs';
