@@ -17,10 +17,10 @@ class MergeHandler extends BaseHandler implements HandlerInterface
     protected $argumentsMapping = ['file', 'files', 'isAutoConvert'];
 
     /** @var ConvertHandler */
-    private $convertHandler = null;
+    protected $convertHandler = null;
 
     /** @var GuessHandler */
-    private $guessHandler = null;
+    protected $guessHandler = null;
 
     public function __construct()
     {

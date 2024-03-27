@@ -2,40 +2,55 @@
 
 namespace Tests\Handlers;
 
-use Tests\TestCase;
-use Ordinary9843\Configs\Config;
+use ReflectionClass;
+use Tests\BaseTestCase;
 use Ordinary9843\Handlers\MergeHandler;
-use Ordinary9843\Constants\MessageConstant;
+use Ordinary9843\Exceptions\HandlerException;
 
-class MergeHandlerTest extends TestCase
+class MergeHandlerTest extends BaseTestCase
 {
     /**
      * @return void
      */
-    public function testExecuteWithExistFileShouldSucceed(): void
+    public function testArgumentsMappingWhenProvidedInputs()
+    {
+        $handler = new MergeHandler();
+        $reflection = new ReflectionClass($handler);
+        $property = $reflection->getProperty('argumentsMapping');
+        $property->setAccessible(true);
+        $argumentsMapping = $property->getValue($handler);
+        $this->assertCount(3, $argumentsMapping);
+        $this->assertContains('file', $argumentsMapping);
+        $this->assertContains('files', $argumentsMapping);
+        $this->assertContains('isAutoConvert', $argumentsMapping);
+    }
+
+    /**
+     * @return void
+     */
+    public function testExecuteShouldSucceed(): void
     {
         $file = dirname(__DIR__, 2) . '/files/merge/test.pdf';
-        $mergeHandler = new MergeHandler();
-        $mergeHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $mergedFile = $mergeHandler->execute($file, [
+        $handler = new MergeHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $mergedFile = $handler->execute($file, [
             dirname(__DIR__, 2) . '/files/merge/part_1.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_2.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_3.pdf'
         ]);
         $this->assertEquals($file, $mergedFile);
         $this->assertFileExists($mergedFile);
-        $this->assertFalse($mergeHandler->hasMessages(MessageConstant::TYPE_ERROR));
     }
 
     /**
      * @return void
      */
-    public function testExecuteWithExistFileShouldSucceedWhenFilenameHasChinese(): void
+    public function testExecuteWhenFilenameHasChineseShouldSucceed(): void
     {
         $file = dirname(__DIR__, 2) . '/files/merge/test.pdf';
-        $mergeHandler = new MergeHandler();
-        $mergeHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $mergedFile = $mergeHandler->execute($file, [
+        $handler = new MergeHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $mergedFile = $handler->execute($file, [
             dirname(__DIR__, 2) . '/files/gs_ -test/中文.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_1.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_2.pdf',
@@ -43,18 +58,17 @@ class MergeHandlerTest extends TestCase
         ]);
         $this->assertEquals($file, $mergedFile);
         $this->assertFileExists($mergedFile);
-        $this->assertFalse($mergeHandler->hasMessages(MessageConstant::TYPE_ERROR));
     }
 
     /**
      * @return void
      */
-    public function testExecuteWithNotExistFileShouldReturnErrorMessage(): void
+    public function testExecuteWhenFileDoesNotExistShouldSkipProcessing(): void
     {
         $file = dirname(__DIR__, 2) . '/files/merge/test.pdf';
-        $mergeHandler = new MergeHandler();
-        $mergeHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $mergedFile = $mergeHandler->execute($file, [
+        $handler = new MergeHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $mergedFile = $handler->execute($file, [
             dirname(__DIR__, 2) . '/files/merge/part_1.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_2.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_3.pdf',
@@ -62,57 +76,40 @@ class MergeHandlerTest extends TestCase
         ]);
         $this->assertEquals($file, $mergedFile);
         $this->assertFileExists($mergedFile);
-        $this->assertTrue($mergeHandler->hasMessages(MessageConstant::TYPE_ERROR));
     }
 
     /**
      * @return void
      */
-    public function testExecuteWithNotPdfShouldReturnErrorMessage(): void
+    public function testExecuteWhenFileTypeNotMatchShouldSkipProcessing(): void
     {
         $file = dirname(__DIR__, 2) . '/files/merge/test.pdf';
-        $methods = ['isPdf', 'getConfig'];
-        if ($this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9)) {
-            $mergeHandler = $this->getMockBuilder(MergeHandler::class)
-                ->setMethods($methods)
-                ->getMock();
-        } else {
-            $mergeHandler = $this->getMockBuilder(MergeHandler::class)
-                ->onlyMethods($methods)
-                ->getMock();
-        }
-
-        $mergeHandler->method('getConfig')->willReturn(new Config(['binPath' => $this->getEnv('GS_BIN_PATH')]));
-        $mergeHandler->method('isPdf')->willReturn(false);
-        $mergedFile = $mergeHandler->execute($file, [
+        $handler = new MergeHandler();
+        $mergedFile = $handler->execute($file, [
             dirname(__DIR__, 2) . '/files/merge/part_1.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_2.pdf',
-            dirname(__DIR__, 2) . '/files/merge/part_3.pdf'
+            dirname(__DIR__, 2) . '/files/merge/part_3.pdf',
+            dirname(__DIR__, 2) . '/files/merge/test.txt'
         ]);
         $this->assertEquals($file, $mergedFile);
         $this->assertFileExists($mergedFile);
-        $this->assertTrue($mergeHandler->hasMessages(MessageConstant::TYPE_ERROR));
     }
 
     /**
      * @return void
      */
-    public function testExecuteFailedShouldReturnErrorMessage(): void
+    public function testExecuteFailedShouldThrowHandlerException(): void
     {
+        $this->expectException(HandlerException::class);
         $file = dirname(__DIR__, 2) . '/files/merge/test.pdf';
-        $mergeHandler = new MergeHandler(new Config([
-            'binPath' => $this->getEnv('GS_BIN_PATH')
-        ]));
-        $mergeHandler->setOptions([
+        $handler = new MergeHandler();
+        $handler->setOptions([
             'test' => true
         ]);
-        $mergedFile = $mergeHandler->execute($file, [
+        $handler->execute($file, [
             dirname(__DIR__, 2) . '/files/merge/part_1.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_2.pdf',
             dirname(__DIR__, 2) . '/files/merge/part_3.pdf'
         ]);
-        $this->assertNotEquals($file, $mergedFile);
-        $this->isPhpUnitVersionInRange(self::PHPUNIT_MIN_VERSION, self::PHPUNIT_VERSION_9) ? $this->assertFileNotExists($mergedFile) : $this->assertFileDoesNotExist($mergedFile);
-        $this->assertTrue($mergeHandler->hasMessages(MessageConstant::TYPE_ERROR));
     }
 }

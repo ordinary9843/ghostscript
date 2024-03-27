@@ -2,6 +2,7 @@
 
 namespace Tests\Handlers;
 
+use ReflectionClass;
 use Tests\BaseTestCase;
 use Ordinary9843\Handlers\ConvertHandler;
 use Ordinary9843\Exceptions\HandlerException;
@@ -11,12 +12,27 @@ class ConvertHandlerTest extends BaseTestCase
     /**
      * @return void
      */
+    public function testArgumentsMappingWhenProvidedInputs()
+    {
+        $handler = new ConvertHandler();
+        $reflection = new ReflectionClass($handler);
+        $property = $reflection->getProperty('argumentsMapping');
+        $property->setAccessible(true);
+        $argumentsMapping = $property->getValue($handler);
+        $this->assertCount(2, $argumentsMapping);
+        $this->assertContains('file', $argumentsMapping);
+        $this->assertContains('version', $argumentsMapping);
+    }
+
+    /**
+     * @return void
+     */
     public function testExecuteShouldSucceed(): void
     {
         $file = dirname(__DIR__, 2) . '/files/convert/test.pdf';
-        $convertHandler = new ConvertHandler();
-        $convertHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $convertedFile = $convertHandler->execute($file, 1.5);
+        $handler = new ConvertHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $convertedFile = $handler->execute($file, 1.5);
         $this->assertEquals($file, $convertedFile);
         $this->assertFileExists($convertedFile);
     }
@@ -24,12 +40,12 @@ class ConvertHandlerTest extends BaseTestCase
     /**
      * @return void
      */
-    public function testExecuteShouldSucceedWhenFilenameHasChinese(): void
+    public function testExecuteWhenFilenameHasChineseShouldSucceed(): void
     {
         $file = dirname(__DIR__, 2) . '/files/gs_ -test/中文.pdf';
-        $convertHandler = new ConvertHandler();
-        $convertHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $convertedFile = $convertHandler->execute($file, 1.5);
+        $handler = new ConvertHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $convertedFile = $handler->execute($file, 1.5);
         $this->assertEquals($file, $convertedFile);
         $this->assertFileExists($convertedFile);
     }
@@ -41,9 +57,9 @@ class ConvertHandlerTest extends BaseTestCase
     {
         $this->expectException(HandlerException::class);
         $file = dirname(__DIR__, 2) . '/files/convert/part_1.pdf';
-        $convertHandler = new ConvertHandler();
-        $convertHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $convertHandler->execute($file, 1.5);
+        $handler = new ConvertHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $handler->execute($file, 1.5);
     }
 
     /**
@@ -53,9 +69,9 @@ class ConvertHandlerTest extends BaseTestCase
     {
         $this->expectException(HandlerException::class);
         $file = dirname(__DIR__, 2) . '/files/convert/test.txt';
-        $convertHandler = new ConvertHandler();
-        $convertHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $convertHandler->execute($file, 1.5);
+        $handler = new ConvertHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $handler->execute($file, 1.5);
     }
 
     /**
@@ -65,11 +81,11 @@ class ConvertHandlerTest extends BaseTestCase
     {
         $this->expectException(HandlerException::class);
         $file = dirname(__DIR__, 2) . '/files/convert/test.pdf';
-        $convertHandler = new ConvertHandler();
-        $convertHandler->setBinPath($this->getEnv('GS_BIN_PATH'));
-        $convertHandler->setOptions([
+        $handler = new ConvertHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $handler->setOptions([
             'test' => true
         ]);
-        $convertHandler->execute($file, 1.5);
+        $handler->execute($file, 1.5);
     }
 }

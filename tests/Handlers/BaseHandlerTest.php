@@ -9,7 +9,7 @@ use Ordinary9843\Handlers\Handler;
 use Ordinary9843\Exceptions\BaseException;
 use Ordinary9843\Exceptions\InvalidException;
 
-class HandlerTest extends BaseTestCase
+class BaseHandlerTest extends BaseTestCase
 {
     /**
      * @return void
