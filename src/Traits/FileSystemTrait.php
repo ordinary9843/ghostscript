@@ -50,11 +50,11 @@ trait FileSystemTrait
 
     /**
      * @param string $path
-     * @param string $permission
+     * @param int $permission
      *
      * @return void
      */
-    public function makeDir(string $path, string $permission = '0755'): void
+    public function makeDir(string $path, int $permission = 0755): void
     {
         @mkdir($path, $permission);
     }

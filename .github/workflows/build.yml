@@ -26,8 +26,6 @@ jobs:
         run: composer self-update && composer install && composer dump-autoload
       - name: Copy .env.example to .env
         run: cp .env.example .env
-      - name: Set directory permissions
-        run: chmod -R 777 ../files
       - name: Run tests
         run: composer test
       - name: Upload coverage to Codecov
