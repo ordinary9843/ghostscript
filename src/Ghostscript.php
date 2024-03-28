@@ -14,6 +14,7 @@ use Ordinary9843\Interfaces\HandlerInterface;
  * @method array split(string $file, string $path)
  * @method array toImage(string $file, string $path, string $type = 'jpeg')
  * @method int getTotalPages(string $file)
+ * @method void clearTmpFiles()
  * @method void setBinPath(string $binPath)
  * @method string getBinPath()
  * @method void setTmpPath(string $tmpPath)
@@ -66,6 +67,7 @@ class Ghostscript
             case 'getBinPath':
             case 'getTmpPath':
             case 'getOptions':
+            case 'clearTmpFiles':
                 $handler = $this->createBaseHandler();
 
                 return $handler->{$name}();

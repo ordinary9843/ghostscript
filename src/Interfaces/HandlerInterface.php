@@ -22,4 +22,9 @@ interface HandlerInterface extends BaseInterface
      * @return array
      */
     public function getOptions(): array;
+
+    /**
+     * @return void
+     */
+    public function clearTmpFiles(): void;
 }

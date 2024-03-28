@@ -60,6 +60,13 @@ class GhostscriptTest extends BaseTestCase
         $this->assertIsInt((new Ghostscript($this->getEnv('GS_BIN_PATH')))->getTotalPages(dirname(__DIR__, 1) . '/files/get-total-pages/test.pdf'));
     }
 
+    /**
+     * @return void
+     */
+    public function testClearTmpFilesShouldSucceed(): void
+    {
+        $this->assertNull((new Ghostscript($this->getEnv('GS_BIN_PATH')))->clearTmpFiles(dirname(__DIR__, 1) . '/files/get-total-pages/test.pdf'));
+    }
 
     /**
      * @return void
