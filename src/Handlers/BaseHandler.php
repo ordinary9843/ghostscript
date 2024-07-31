@@ -151,7 +151,7 @@ class BaseHandler implements HandlerInterface
      */
     public function isPdf(string $file): bool
     {
-        if (pathinfo($file, PATHINFO_EXTENSION) !== 'pdf') {
+        if (strcasecmp(pathinfo($file, PATHINFO_EXTENSION), 'pdf') !== 0) {
             return false;
         }
 
