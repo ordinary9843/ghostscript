@@ -84,11 +84,24 @@ class BaseHandlerTest extends BaseTestCase
     /**
      * @return void
      */
-    public function testIsPdfShouldReturnTrue(): void
+    public function testIsPdfShouldReturnTrueForLowercasePdfExtension(): void
     {
         $file = tempnam(sys_get_temp_dir(), 'pdf');
         @file_put_contents($file, '%PDF-');
         @rename($file, $file .= '.pdf');
+        $handler = new BaseHandler();
+        $this->assertTrue($handler->isPdf($file));
+        @unlink($file);
+    }
+
+    /**
+     * @return void
+     */
+    public function testIsPdfShouldReturnTrueForUppercasePdfExtension(): void
+    {
+        $file = tempnam(sys_get_temp_dir(), 'pdf');
+        @file_put_contents($file, '%PDF-');
+        @rename($file, $file .= '.PDF');
         $handler = new BaseHandler();
         $this->assertTrue($handler->isPdf($file));
         @unlink($file);
