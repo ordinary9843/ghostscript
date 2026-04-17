@@ -4,9 +4,6 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -39,7 +36,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         if: matrix.php-version == '8.4'
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
