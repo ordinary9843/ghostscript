@@ -30,6 +30,9 @@ class BaseHandler implements HandlerInterface
     /** @var array */
     protected $tmpFiles = [];
 
+    /**
+     * @return void
+     */
     public function __construct()
     {
         $this->config = Config::getInstance();

@@ -25,6 +25,9 @@ class MergeHandler extends BaseHandler implements HandlerInterface
     /** @var GuessHandler */
     protected $guessHandler = null;
 
+    /**
+     * @return void
+     */
     public function __construct()
     {
         parent::__construct();

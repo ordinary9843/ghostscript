@@ -24,6 +24,9 @@ class ToImageHandler extends BaseHandler implements HandlerInterface
     /** @var GetTotalPagesHandler */
     protected $getTotalPagesHandler = null;
 
+    /**
+     * @return void
+     */
     public function __construct()
     {
         parent::__construct();
