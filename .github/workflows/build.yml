@@ -14,7 +14,7 @@ jobs:
           ["7.1", "7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]
     name: PHP ${{ matrix.php-versions }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
       - name: Update advanced packaging tools
         run: sudo apt update
       - name: Install Ghostscript
@@ -31,7 +31,7 @@ jobs:
       - name: Run tests
         run: composer test
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
