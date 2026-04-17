@@ -1,20 +1,37 @@
+# IDE / Editor
 .vscode/
 .idea/
-.phpunit.cache/
+
+# OS
+.DS_Store
+
+# Dependencies
 vendor/
+composer.lock
+
+# Environment
+.env
+
+# Test output
+.phpunit.cache/
+.phpunit.result.cache
+coverage.xml
 report/
+
+# Test generated files
 files/split/parts/
 files/merge/res.pdf
 files/merge/single.pdf
 files/to-image/images/
-composer.lock
-coverage.xml
+
+# PHPUnit config (local override)
 phpunit.xml
-.phpunit.result.cache
-.DS_Store
-.env
+
+# Docker
+Dockerfile
+docker-compose.yml
+
+# Tools
 .repomix/
 repomix-output.txt
 .claude/
-Dockerfile
-docker-compose.yml
