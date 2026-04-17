@@ -15,7 +15,7 @@ This library has the following features:
 
 - Full-featured: This library supports PDF version prediction, conversion, merger, and splitting.
 - Lower dependency on external libraries: Most Ghostscript libraries have too high a dependency on other libraries.
-- Compatible with multiple PHP versions: It can run properly on PHP 7.1 - 8.x.
+- Compatible with multiple PHP versions: It can run properly on PHP 7.1 - 8.4.
 
 ## Requirements
 
@@ -80,6 +80,8 @@ $ghostscript->convert($file, GhostscriptConstant::STABLE_VERSION);
 
 /**
  * This function merges multiple PDF files into a single PDF file.
+ * The fourth parameter $isAutoConvert (default: true) automatically converts
+ * all input PDFs to a stable version before merging.
  *
  * Output: './files/merge/res.pdf'
  */
@@ -87,7 +89,7 @@ $ghostscript->merge('./files/merge', 'res.pdf', [
     './files/merge/part_1.pdf',
     './files/merge/part_2.pdf',
     './files/merge/part_3.pdf'
-]);
+], true);
 
 /**
  * This function splits a PDF file into individual pages, each saved as a separate PDF file.
@@ -102,11 +104,12 @@ $ghostscript->split('./files/split/test.pdf', './files/split/parts');
 
 /**
  * This function converts each page of a PDF file into individual image files.
+ * Supported types: ImageTypeConstant::JPEG, ImageTypeConstant::PNG
  *
  * Output: [
- *   './files/to-image/images/image_1.pdf',
- *   './files/to-image/images/image_2.pdf',
- *   './files/to-image/images/image_3.pdf'
+ *   './files/to-image/images/image_1.jpeg',
+ *   './files/to-image/images/image_2.jpeg',
+ *   './files/to-image/images/image_3.jpeg'
  * ]
  */
 $ghostscript->toImage('./files/to-image/test.pdf', './files/to-image/images', ImageTypeConstant::JPEG);
@@ -119,9 +122,25 @@ $ghostscript->toImage('./files/to-image/test.pdf', './files/to-image/images', Im
 $ghostscript->getTotalPages('./files/get-total-pages/test.pdf');
 
 /**
+ * This function sets custom Ghostscript options appended to the shell command.
+ */
+$ghostscript->setOptions(['-dPDFSETTINGS' => '/ebook']);
+
+/**
+ * This function returns the currently configured Ghostscript options.
+ *
+ * Output: ['-dPDFSETTINGS' => '/ebook']
+ */
+$ghostscript->getOptions();
+
+/**
  * Clear temporary files generated during the PDF processing.
+ * $isForceClear = true removes all tmp files immediately regardless of age.
+ * $days specifies the age threshold in days (default: 7).
  */
 $ghostscript->clearTmpFiles();
+$ghostscript->clearTmpFiles(true);
+$ghostscript->clearTmpFiles(false, 30);
 ```
 
 ## Testing
