@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ordinary9843\Handlers;
 
 use Ordinary9843\Helpers\PathHelper;
@@ -16,19 +18,23 @@ class ToImageHandler extends BaseHandler implements HandlerInterface
     /** @var array */
     protected $argumentsMapping = ['file', 'path', 'type'];
 
+    /** @var string[] */
+    private const ALLOWED_TYPES = [ImageTypeConstant::JPEG, ImageTypeConstant::PNG];
+
     /** @var GetTotalPagesHandler */
     protected $getTotalPagesHandler = null;
 
     public function __construct()
     {
+        parent::__construct();
         $this->getTotalPagesHandler = (new HandlerFactory())->create('getTotalPages');
     }
 
     /**
      * @param array ...$arguments
-     * 
+     *
      * @return array
-     * 
+     *
      * @throws HandlerException
      * @throws InvalidException
      */
@@ -41,6 +47,14 @@ class ToImageHandler extends BaseHandler implements HandlerInterface
             $file = PathHelper::convertPathSeparator($arguments['file']);
             $path = PathHelper::convertPathSeparator($arguments['path']);
             $type = $arguments['type'] ? $arguments['type'] : ImageTypeConstant::JPEG;
+
+            if (!in_array($type, self::ALLOWED_TYPES, true)) {
+                throw new InvalidException(
+                    'Invalid image type "' . $type . '". Allowed: ' . implode(', ', self::ALLOWED_TYPES) . '.',
+                    InvalidException::CODE_FILE_TYPE
+                );
+            }
+
             $totalPages = $this->getTotalPagesHandler->execute($file);
             (!$this->isDir($path)) && $this->makeDir($path);
             $imageFormatPath = ($totalPages > 1) ? '/image_%d.' . $type : '/' . pathinfo($file, PATHINFO_FILENAME) . '.' . $type;

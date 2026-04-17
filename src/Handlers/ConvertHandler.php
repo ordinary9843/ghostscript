@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ordinary9843\Handlers;
 
 use Ordinary9843\Helpers\PathHelper;

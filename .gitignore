@@ -5,6 +5,7 @@ vendor/
 report/
 files/split/parts/
 files/merge/res.pdf
+files/merge/single.pdf
 files/to-image/images/
 composer.lock
 coverage.xml
@@ -12,3 +13,8 @@ phpunit.xml
 .phpunit.result.cache
 .DS_Store
 .env
+.repomix/
+repomix-output.txt
+.claude/
+Dockerfile
+docker-compose.yml

@@ -47,4 +47,33 @@ class GuessHandlerTest extends BaseTestCase
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
         $handler->execute($file);
     }
+
+    /**
+     * @return void
+     */
+    public function testExecuteReturnsZeroForPdfWithoutVersionHeader(): void
+    {
+        $file = tempnam(sys_get_temp_dir(), 'test');
+        @rename($file, $file .= '.pdf');
+        @file_put_contents($file, 'This is not a real PDF, no version header.');
+        $handler = new GuessHandler();
+
+        try {
+            $version = $handler->execute($file);
+            $this->assertEquals(0.0, $version);
+        } finally {
+            @unlink($file);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function testExecuteWithEmptyFilePathThrowsHandlerException(): void
+    {
+        $this->expectException(HandlerException::class);
+        $this->expectExceptionCode(HandlerException::CODE_EXECUTE);
+        $handler = new GuessHandler();
+        $handler->execute('');
+    }
 }

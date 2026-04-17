@@ -74,4 +74,28 @@ class GetTotalPagesHandlerTest extends BaseTestCase
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
         $handler->execute($file);
     }
+
+    /**
+     * @return void
+     */
+    public function testExecuteWithEmptyFilePathThrowsHandlerException(): void
+    {
+        $this->expectException(HandlerException::class);
+        $this->expectExceptionCode(HandlerException::CODE_EXECUTE);
+        $handler = new GetTotalPagesHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $handler->execute('');
+    }
+
+    /**
+     * @return void
+     */
+    public function testExecuteWithNonExistentFileThrowsHandlerException(): void
+    {
+        $this->expectException(HandlerException::class);
+        $this->expectExceptionCode(HandlerException::CODE_EXECUTE);
+        $handler = new GetTotalPagesHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $handler->execute('/nonexistent/file.pdf');
+    }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ordinary9843\Exceptions;
 
 use Exception;
@@ -18,7 +20,7 @@ class BaseException extends Exception
      * @param array $detail
      * @param BaseException $previous
      */
-    public function __construct(string $message = 'An unexpected error occurred.', int $code = self::CODE_DEFAULT, array $detail = [], BaseException $previous = null)
+    public function __construct(string $message = 'An unexpected error occurred.', int $code = self::CODE_DEFAULT, array $detail = [], ?BaseException $previous = null)
     {
         parent::__construct($message, $code, $previous);
 

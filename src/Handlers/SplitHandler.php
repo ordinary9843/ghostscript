@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ordinary9843\Handlers;
 
 use Ordinary9843\Helpers\PathHelper;
@@ -20,14 +22,15 @@ class SplitHandler extends BaseHandler implements HandlerInterface
 
     public function __construct()
     {
+        parent::__construct();
         $this->getTotalPagesHandler = (new HandlerFactory())->create('getTotalPages');
     }
 
     /**
      * @param array ...$arguments
-     * 
+     *
      * @return array
-     * 
+     *
      * @throws HandlerException
      * @throws InvalidException
      */
@@ -49,7 +52,7 @@ class SplitHandler extends BaseHandler implements HandlerInterface
 
             return array_map(function ($i) use ($path, $pdfFormatPath) {
                 return $path . sprintf($pdfFormatPath, $i);
-            }, range(0, $totalPages - 1));
+            }, range(1, $totalPages));
         } catch (BaseException $exception) {
             throw new HandlerException($exception->getMessage(), HandlerException::CODE_EXECUTE, [
                 'arguments' => $arguments

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ordinary9843\Exceptions;
 
 class InvalidException extends BaseException
@@ -22,7 +24,7 @@ class InvalidException extends BaseException
      * @param array $detail
      * @param BaseException $previous
      */
-    public function __construct(string $message, int $code = self::CODE_DEFAULT, array $detail = [], BaseException $previous = null)
+    public function __construct(string $message, int $code = self::CODE_DEFAULT, array $detail = [], ?BaseException $previous = null)
     {
         parent::__construct($message, $code, $detail, $previous);
     }
