@@ -38,7 +38,7 @@ jobs:
         run: composer test
 
       - name: Upload coverage to Codecov
-        if: matrix.php-version == '8.1'
+        if: matrix.php-version == '8.4'
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
