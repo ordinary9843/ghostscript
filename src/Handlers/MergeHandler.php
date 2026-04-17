@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ordinary9843\Handlers;
 
 use Ordinary9843\Helpers\PathHelper;
@@ -25,6 +27,7 @@ class MergeHandler extends BaseHandler implements HandlerInterface
 
     public function __construct()
     {
+        parent::__construct();
         $this->convertHandler = (new HandlerFactory())->create('convert');
         $this->guessHandler = (new HandlerFactory())->create('guess');
     }
@@ -41,6 +44,8 @@ class MergeHandler extends BaseHandler implements HandlerInterface
     {
         $this->validateBinPath();
         $this->mapArguments($arguments);
+
+        $file = '';
 
         try {
             $path = PathHelper::convertPathSeparator($arguments['path']);
@@ -59,6 +64,11 @@ class MergeHandler extends BaseHandler implements HandlerInterface
 
                 return true;
             });
+
+            if (empty($files)) {
+                throw new HandlerException('No valid PDF files to merge.', HandlerException::CODE_EXECUTE);
+            }
+
             $output = shell_exec(
                 $this->optionsToCommand(
                     sprintf(
@@ -77,7 +87,9 @@ class MergeHandler extends BaseHandler implements HandlerInterface
 
             return $file;
         } catch (BaseException $exception) {
-            $this->delete($file);
+            if ($file !== '') {
+                $this->delete($file);
+            }
 
             throw new HandlerException($exception->getMessage(), HandlerException::CODE_EXECUTE, [
                 'arguments' => $arguments

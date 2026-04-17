@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ordinary9843\Handlers;
 
 use Ordinary9843\Helpers\PathHelper;
@@ -25,6 +27,8 @@ class GetTotalPagesHandler extends BaseHandler implements HandlerInterface
     {
         $this->validateBinPath();
         $this->mapArguments($arguments);
+
+        $file = '';
 
         try {
             $file = PathHelper::convertPathSeparator($arguments['file']);

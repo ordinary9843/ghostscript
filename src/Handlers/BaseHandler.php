@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ordinary9843\Handlers;
 
 use Ordinary9843\Configs\Config;
@@ -151,6 +153,10 @@ class BaseHandler implements HandlerInterface
      */
     public function isPdf(string $file): bool
     {
+        if (!$this->isFile($file)) {
+            return false;
+        }
+
         if (strcasecmp(pathinfo($file, PATHINFO_EXTENSION), 'pdf') !== 0) {
             return false;
         }

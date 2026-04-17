@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ordinary9843\Traits;
 
 use Ordinary9843\Configs\Config;
@@ -25,8 +27,8 @@ trait ConfigTrait
     }
 
     /**
-     * @param int $tmpPath
-     * 
+     * @param string $tmpPath
+     *
      * @return void
      */
     public function setTmpPath(string $tmpPath): void
