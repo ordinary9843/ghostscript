@@ -50,7 +50,7 @@ class BaseHandlerEdgeCaseTest extends BaseTestCase
         @rename($tmpFile, $tmpFile . '.pdf');
         $tmpFile .= '.pdf';
         $handler->clearTmpFiles(true);
-        $this->assertFileDoesNotExist($tmpFile);
+        $this->assertFalse(file_exists($tmpFile));
     }
 
     public function testOptionsToCommandWithKeyValuePairs(): void
