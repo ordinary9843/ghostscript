@@ -91,4 +91,29 @@ class ConvertHandlerTest extends BaseTestCase
         ]);
         $handler->execute($file, 1.5);
     }
+
+    /**
+     * @return void
+     */
+    public function testExecuteReturnsSameFilePathOnSuccess(): void
+    {
+        $file = dirname(__DIR__, 2) . '/files/convert/test.pdf';
+        $handler = new ConvertHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $result = $handler->execute($file, 1.4);
+        $this->assertEquals($file, $result);
+        $this->assertFileExists($result);
+    }
+
+    /**
+     * @return void
+     */
+    public function testExecuteWithEmptyFilePathThrowsHandlerException(): void
+    {
+        $this->expectException(HandlerException::class);
+        $this->expectExceptionCode(HandlerException::CODE_EXECUTE);
+        $handler = new ConvertHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $handler->execute('', 1.4);
+    }
 }

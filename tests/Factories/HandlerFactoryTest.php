@@ -9,6 +9,7 @@ use Ordinary9843\Handlers\MergeHandler;
 use Ordinary9843\Handlers\SplitHandler;
 use Ordinary9843\Handlers\ConvertHandler;
 use Ordinary9843\Handlers\ToImageHandler;
+use Ordinary9843\Handlers\GetTotalPagesHandler;
 use Ordinary9843\Factories\HandlerFactory;
 use Ordinary9843\Exceptions\NotFoundException;
 
@@ -76,5 +77,34 @@ class HandlerFactoryTest extends BaseTestCase
         $this->expectException(NotFoundException::class);
         $this->expectExceptionCode(NotFoundException::CODE_CLASS);
         (new HandlerFactory)->create('');
+    }
+
+    /**
+     * @return void
+     */
+    public function testCreateGetTotalPagesHandlerShouldSucceed(): void
+    {
+        $handler = (new HandlerFactory())->create('getTotalPages');
+        $this->assertInstanceOf(GetTotalPagesHandler::class, $handler);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCreateWithUppercaseTypeShouldThrowNotFoundException(): void
+    {
+        $this->expectException(NotFoundException::class);
+        $this->expectExceptionCode(NotFoundException::CODE_CLASS);
+        (new HandlerFactory())->create('Convert');
+    }
+
+    /**
+     * @return void
+     */
+    public function testCreateWithUnknownTypeShouldThrowNotFoundException(): void
+    {
+        $this->expectException(NotFoundException::class);
+        $this->expectExceptionCode(NotFoundException::CODE_CLASS);
+        (new HandlerFactory())->create('nonExistentHandler');
     }
 }

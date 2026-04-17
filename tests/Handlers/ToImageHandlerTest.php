@@ -63,4 +63,43 @@ class ToImageHandlerTest extends BaseTestCase
         ]);
         $handler->execute(dirname(__DIR__, 2) . '/files/to-image/test.pdf', '/tmp/mock/files');
     }
+
+    /**
+     * @return void
+     */
+    public function testExecuteWithInvalidImageTypeThrowsHandlerException(): void
+    {
+        $this->expectException(HandlerException::class);
+        $this->expectExceptionCode(HandlerException::CODE_EXECUTE);
+        $handler = new ToImageHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $handler->execute(
+            dirname(__DIR__, 2) . '/files/to-image/test.pdf',
+            sys_get_temp_dir(),
+            'bmp'
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public function testExecuteWithEmptyFilePathThrowsHandlerException(): void
+    {
+        $this->expectException(HandlerException::class);
+        $handler = new ToImageHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $handler->execute('', sys_get_temp_dir(), 'jpeg');
+    }
+
+    /**
+     * @return void
+     */
+    public function testExecuteWithNonExistentFileThrowsHandlerException(): void
+    {
+        $this->expectException(HandlerException::class);
+        $this->expectExceptionCode(HandlerException::CODE_EXECUTE);
+        $handler = new ToImageHandler();
+        $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
+        $handler->execute('/nonexistent/file.pdf', sys_get_temp_dir(), 'jpeg');
+    }
 }
