@@ -10,6 +10,29 @@ use Ordinary9843\Exceptions\HandlerException;
 
 class CompressHandlerTest extends BaseTestCase
 {
+    /** @var string */
+    private $sourceFile;
+
+    /**
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->sourceFile = dirname(__DIR__, 2) . '/files/compress/test.pdf';
+    }
+
+    /**
+     * @return string
+     */
+    private function makeTmpCopy(): string
+    {
+        $tmp = sys_get_temp_dir() . '/compress_test_' . uniqid() . '.pdf';
+        copy($this->sourceFile, $tmp);
+
+        return $tmp;
+    }
+
     /**
      * @return void
      */
@@ -30,12 +53,15 @@ class CompressHandlerTest extends BaseTestCase
      */
     public function testExecuteWithDefaultQualityShouldSucceed(): void
     {
-        $file = dirname(__DIR__, 2) . '/files/compress/test.pdf';
+        $file = $this->makeTmpCopy();
+        $originalSize = filesize($file);
         $handler = new CompressHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
         $result = $handler->execute($file);
         $this->assertEquals($file, $result);
         $this->assertFileExists($file);
+        $this->assertLessThanOrEqual($originalSize, filesize($file));
+        @unlink($file);
     }
 
     /**
@@ -43,12 +69,15 @@ class CompressHandlerTest extends BaseTestCase
      */
     public function testExecuteWithScreenQualityShouldSucceed(): void
     {
-        $file = dirname(__DIR__, 2) . '/files/compress/test.pdf';
+        $file = $this->makeTmpCopy();
+        $originalSize = filesize($file);
         $handler = new CompressHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
         $result = $handler->execute($file, CompressConstant::SCREEN);
         $this->assertEquals($file, $result);
         $this->assertFileExists($file);
+        $this->assertLessThanOrEqual($originalSize, filesize($file));
+        @unlink($file);
     }
 
     /**
@@ -56,12 +85,15 @@ class CompressHandlerTest extends BaseTestCase
      */
     public function testExecuteWithEbookQualityShouldSucceed(): void
     {
-        $file = dirname(__DIR__, 2) . '/files/compress/test.pdf';
+        $file = $this->makeTmpCopy();
+        $originalSize = filesize($file);
         $handler = new CompressHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
         $result = $handler->execute($file, CompressConstant::EBOOK);
         $this->assertEquals($file, $result);
         $this->assertFileExists($file);
+        $this->assertLessThanOrEqual($originalSize, filesize($file));
+        @unlink($file);
     }
 
     /**
@@ -69,12 +101,14 @@ class CompressHandlerTest extends BaseTestCase
      */
     public function testExecuteWithPrinterQualityShouldSucceed(): void
     {
-        $file = dirname(__DIR__, 2) . '/files/compress/test.pdf';
+        $file = $this->makeTmpCopy();
         $handler = new CompressHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
         $result = $handler->execute($file, CompressConstant::PRINTER);
         $this->assertEquals($file, $result);
         $this->assertFileExists($file);
+        $this->assertGreaterThan(0, filesize($file));
+        @unlink($file);
     }
 
     /**
@@ -82,12 +116,15 @@ class CompressHandlerTest extends BaseTestCase
      */
     public function testExecuteWithPrepressQualityShouldSucceed(): void
     {
-        $file = dirname(__DIR__, 2) . '/files/compress/test.pdf';
+        $file = $this->makeTmpCopy();
+        $originalSize = filesize($file);
         $handler = new CompressHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
         $result = $handler->execute($file, CompressConstant::PREPRESS);
         $this->assertEquals($file, $result);
         $this->assertFileExists($file);
+        $this->assertLessThanOrEqual($originalSize, filesize($file));
+        @unlink($file);
     }
 
     /**
@@ -97,10 +134,11 @@ class CompressHandlerTest extends BaseTestCase
     {
         $this->expectException(HandlerException::class);
         $this->expectExceptionCode(HandlerException::CODE_EXECUTE);
-        $file = dirname(__DIR__, 2) . '/files/compress/test.pdf';
+        $file = $this->makeTmpCopy();
         $handler = new CompressHandler();
         $handler->setBinPath($this->getEnv('GS_BIN_PATH'));
         $handler->execute($file, 'invalid');
+        @unlink($file);
     }
 
     /**

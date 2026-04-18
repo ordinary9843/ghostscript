@@ -59,7 +59,7 @@ class CompressHandler extends BaseHandler implements HandlerInterface
             $output = shell_exec(
                 $this->optionsToCommand(
                     sprintf(
-                        '%s -sDEVICE=pdfwrite -dQUIET -dNOPAUSE -dBATCH -dCompatibilityLevel=1.4 -dPDFSETTINGS=/%s -sOutputFile=%s %s',
+                        '%s -sDEVICE=pdfwrite -dQUIET -dNOPAUSE -dBATCH -dPDFSETTINGS=/%s -sOutputFile=%s %s',
                         $this->getBinPath(),
                         $quality,
                         escapeshellarg($tmpFile),
