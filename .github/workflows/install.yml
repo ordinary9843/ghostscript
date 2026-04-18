@@ -1,4 +1,5 @@
 name: install
+run-name: "install: ${{ github.ref_name }}"
 on:
   release:
     types: [published]
@@ -23,7 +24,7 @@ jobs:
         run: |
           mkdir test-install && cd test-install
           composer init --name="test/test" --no-interaction
-          composer require ordinary9843/ghostscript --no-interaction --prefer-dist --no-audit
+          composer require ordinary9843/ghostscript --no-interaction --prefer-dist
 
       - name: Verify installation
         run: |
