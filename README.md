@@ -2,6 +2,9 @@
 
 [![build](https://github.com/ordinary9843/ghostscript/actions/workflows/build.yml/badge.svg)](https://github.com/ordinary9843/ghostscript/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/ordinary9843/ghostscript/branch/master/graph/badge.svg?token=DMXRZFN55V)](https://codecov.io/gh/ordinary9843/ghostscript)
+[![Latest Stable Version](https://poser.pugx.org/ordinary9843/ghostscript/v)](https://packagist.org/packages/ordinary9843/ghostscript)
+[![Total Downloads](https://poser.pugx.org/ordinary9843/ghostscript/downloads)](https://packagist.org/packages/ordinary9843/ghostscript)
+[![License](https://poser.pugx.org/ordinary9843/ghostscript/license)](https://packagist.org/packages/ordinary9843/ghostscript)
 
 ### If there are any features you desire, please open an issue, and I will do our best to meet your requirements!
 
