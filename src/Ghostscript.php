@@ -9,6 +9,7 @@ use Ordinary9843\Factories\HandlerFactory;
 use Ordinary9843\Exceptions\HandlerException;
 use Ordinary9843\Exceptions\InvalidException;
 use Ordinary9843\Interfaces\HandlerInterface;
+use Ordinary9843\Constants\CompressConstant;
 use Ordinary9843\Constants\ImageTypeConstant;
 
 class Ghostscript
@@ -31,6 +32,20 @@ class Ghostscript
         ];
 
         Config::initialize($this->arguments);
+    }
+
+    /**
+     * @param string $file
+     * @param string $quality
+     *
+     * @return string
+     *
+     * @throws HandlerException
+     * @throws InvalidException
+     */
+    public function compress(string $file, string $quality = CompressConstant::EBOOK): string
+    {
+        return $this->createHandler('compress')->execute($file, $quality);
     }
 
     /**

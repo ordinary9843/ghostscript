@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ordinary9843\Factories;
 
 use Ordinary9843\Handlers\BaseHandler;
+use Ordinary9843\Handlers\CompressHandler;
 use Ordinary9843\Handlers\ConvertHandler;
 use Ordinary9843\Handlers\GetTotalPagesHandler;
 use Ordinary9843\Handlers\GuessHandler;
@@ -18,6 +19,7 @@ class HandlerFactory
 {
     private const HANDLER_MAP = [
         'base'          => BaseHandler::class,
+        'compress'      => CompressHandler::class,
         'convert'       => ConvertHandler::class,
         'guess'         => GuessHandler::class,
         'getTotalPages' => GetTotalPagesHandler::class,

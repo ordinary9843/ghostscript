@@ -4,10 +4,11 @@ namespace Tests\Factories;
 
 use Tests\BaseTestCase;
 use Ordinary9843\Handlers\BaseHandler;
+use Ordinary9843\Handlers\CompressHandler;
+use Ordinary9843\Handlers\ConvertHandler;
 use Ordinary9843\Handlers\GuessHandler;
 use Ordinary9843\Handlers\MergeHandler;
 use Ordinary9843\Handlers\SplitHandler;
-use Ordinary9843\Handlers\ConvertHandler;
 use Ordinary9843\Handlers\ToImageHandler;
 use Ordinary9843\Handlers\GetTotalPagesHandler;
 use Ordinary9843\Factories\HandlerFactory;
@@ -22,6 +23,15 @@ class HandlerFactoryTest extends BaseTestCase
     {
         $handler = (new HandlerFactory)->create('base');
         $this->assertInstanceOf(BaseHandler::class, $handler);
+    }
+
+    /**
+     * @return void
+     */
+    public function testCreateCompressHandlerShouldSucceed(): void
+    {
+        $handler = (new HandlerFactory())->create('compress');
+        $this->assertInstanceOf(CompressHandler::class, $handler);
     }
 
     /**

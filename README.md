@@ -49,6 +49,7 @@ Example usage:
 require './vendor/autoload.php';
 
 use Ordinary9843\Ghostscript;
+use Ordinary9843\Constants\CompressConstant;
 use Ordinary9843\Constants\GhostscriptConstant;
 use Ordinary9843\Constants\ImageTypeConstant;
 
@@ -66,6 +67,14 @@ $ghostscript->setBinPath($binPath);
  * This function sets the path for storing temporary files created during the PDF processing in Ghostscript.
  */
 $ghostscript->setTmpPath($tmpPath);
+
+/**
+ * This function compresses the PDF file using the specified quality setting.
+ * Supported qualities: CompressConstant::SCREEN, EBOOK (default), PRINTER, PREPRESS
+ *
+ * Output: './files/compress/test.pdf'
+ */
+$ghostscript->compress($file, CompressConstant::EBOOK);
 
 /**
  * This function analyzes the input PDF file and returns the guessed PDF version.
