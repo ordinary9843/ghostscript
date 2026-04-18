@@ -1,0 +1,31 @@
+name: install
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  composer-require:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ["7.1", "7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]
+    name: PHP ${{ matrix.php-version }}
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: composer:v2
+
+      - name: Require package
+        run: |
+          mkdir test-install && cd test-install
+          composer init --name="test/test" --no-interaction
+          composer require ordinary9843/ghostscript --no-interaction --prefer-dist --no-audit
+
+      - name: Verify installation
+        run: |
+          cd test-install
+          php -r "require 'vendor/autoload.php'; new Ordinary9843\Ghostscript(); echo 'OK' . PHP_EOL;"
