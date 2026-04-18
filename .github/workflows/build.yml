@@ -25,21 +25,8 @@ jobs:
           coverage: xdebug
           tools: composer:v2
 
-      - name: Pin PHPUnit version
-        run: |
-          PHP="${{ matrix.php-version }}"
-          case "$PHP" in
-            7.1|7.2)      PHPUNIT="^7.0"  ;;
-            7.3|7.4|8.0)  PHPUNIT="^9.0"  ;;
-            8.1)           PHPUNIT="^10.0" ;;
-            8.2)           PHPUNIT="^11.0" ;;
-            8.3)           PHPUNIT="^12.0" ;;
-            8.4)           PHPUNIT="^13.0" ;;
-          esac
-          composer require --dev --no-update "phpunit/phpunit:$PHPUNIT"
-
       - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+        run: composer install --no-interaction --prefer-dist --no-audit
 
       - name: Copy .env
         run: cp .env.example .env
